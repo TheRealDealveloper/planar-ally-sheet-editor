@@ -30,8 +30,10 @@
         #sheetContainer:fullscreen #visualCanvas { max-height: none; }
         #visualCanvas:focus { background: #fafbfc; }
         
-        h2, p { margin-top: 0; color: #bdc3c7; }
-        .instruction { font-size: 0.9em; margin-bottom: 10px; color: #7f8c8d; }
+        /* Fixed: Removed global 'p' color styling so it doesn't wash out your sheet */
+        h2 { margin-top: 0; color: #fff; }
+        p { margin-top: 0; }
+        .instruction { font-size: 0.9em; margin-bottom: 10px; color: #bdc3c7; }
         
         details { background: #1a252f; border-radius: 8px; padding: 10px 20px; border: 1px solid #34495e; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
         summary { font-size: 1.2em; font-weight: bold; cursor: pointer; color: #a8e6cf; outline: none; list-style: none; padding: 10px 0; }
@@ -46,13 +48,13 @@
         <div class="collapsible-content">
             <p class="instruction">Paste your HTML code from Planar Ally here to load your sheet.</p>
             <textarea id="inputHtml" placeholder="Paste HTML here..."></textarea>
-            <button onclick="loadSheet()" class="btn-main">Load Sheet & Hide This Code</button>
+            <button onclick="loadSheet()" class="btn-main">Load Sheet & Enter Fullscreen</button>
         </div>
     </details>
 
     <div class="panel">
-        <h2 style="color: #fff;">Step 2: Edit Visually</h2>
-        <p class="instruction" style="color: #bdc3c7;">Click to edit text. HP and EXP bars will update automatically when you change their numbers!</p>
+        <h2>Step 2: Edit Visually</h2>
+        <p class="instruction">Click to edit text. HP and EXP bars will update automatically when you change their numbers!</p>
         
         <button onclick="exportSheet()" class="btn-main btn-blue" style="font-size: 1.2em; padding: 15px;">Finish Editing & Copy New HTML</button>
 
@@ -65,8 +67,9 @@
                 <button class="symbol-btn" onmousedown="event.preventDefault(); insertSymbol('🔴')">🔴 Fail</button>
                 <button class="symbol-btn" onmousedown="event.preventDefault(); insertSymbol('⚪')">⚪ Empty Circle</button>
                 
-                <button class="symbol-btn" onmousedown="event.preventDefault(); changePortrait()">🖼️ Change Portrait</button>
-                
+                <button class="symbol-btn" onmousedown="event.preventDefault(); changePortrait()">🔗 Paste Image Link</button>
+                <button class="symbol-btn" onmousedown="event.preventDefault(); changeTheme()">🎨 Theme</button>
+
                 <button class="symbol-btn fullscreen-btn" onclick="toggleFullscreen()" title="Toggle Fullscreen">⛶ Fullscreen</button>
             </div>
             
@@ -123,7 +126,7 @@
             document.getElementById('visualCanvas').innerHTML = rawHtml;
             document.getElementById('inputSection').removeAttribute('open');
             updateBars();
-
+            
             const sheetContainer = document.getElementById('sheetContainer');
             if (sheetContainer.requestFullscreen) {
                 sheetContainer.requestFullscreen();
@@ -144,7 +147,7 @@
             
             outputBox.select();
             document.execCommand('copy');
-            alert("Success! The updated HTML has been copied to your clipboard. You can now paste it directly back into Planar Ally.");
+            alert("✅ Success! The updated HTML has been copied to your clipboard. You can now paste it directly back into Planar Ally.");
         }
 
         function insertSymbol(symbol) {
@@ -154,21 +157,41 @@
 
         function changePortrait() {
             const canvas = document.getElementById('visualCanvas');
-            const img = canvas.querySelector('img'); // Finds the character portrait
+            const img = canvas.querySelector('img'); 
             
             if (img) {
                 let currentUrl = img.getAttribute('src');
-                if (currentUrl.includes("PASTE") || currentUrl.includes("URL")) {
+                if (!currentUrl || currentUrl.includes("PASTE") || currentUrl.includes("URL")) {
                     currentUrl = ""; 
                 }
                 
-                const newUrl = prompt("Paste the direct URL to your character art (e.g., ending in .png or .jpg):", currentUrl);
+                const newUrl = prompt("Paste the direct URL to your character art (from your GitHub Megathread):", currentUrl);
                 
                 if (newUrl !== null && newUrl.trim() !== "") {
                     img.src = newUrl.trim();
                 }
             } else {
                 alert("Could not find a portrait image on this sheet to update!");
+            }
+        }
+
+        const themes = [
+            "linear-gradient(135deg, #1e3f20, #0a1c0b)", 
+            "linear-gradient(135deg, #8b0000, #3d0000)", 
+            "linear-gradient(135deg, #2c3e50, #000000)", 
+            "linear-gradient(135deg, #4b0082, #191970)", 
+            "linear-gradient(135deg, #b8860b, #556b2f)"  
+        ];
+        let currentThemeIndex = 0;
+
+        function changeTheme() {
+            const canvas = document.getElementById('visualCanvas');
+            const h1 = canvas.querySelector('h1'); 
+            
+            if (h1) {
+                const headerDiv = h1.parentElement.parentElement;
+                currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+                headerDiv.style.background = themes[currentThemeIndex];
             }
         }
 
