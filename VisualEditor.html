@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Visual Character Sheet Editor</title>
+    <style>
+        body { font-family: sans-serif; background: #2c3e50; color: #fff; padding: 20px; display: flex; flex-direction: column; gap: 20px; max-width: 1000px; margin: 0 auto; }
+        .panel { background: #1a252f; padding: 20px; border-radius: 8px; display: flex; flex-direction: column; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        textarea { width: 100%; height: 150px; background: #0b141a; color: #a8e6cf; border: 1px solid #34495e; padding: 10px; font-family: monospace; border-radius: 4px; resize: vertical; box-sizing: border-box; }
+        
+        .btn-main { background: #27ae60; color: #fff; border: none; padding: 12px 20px; font-size: 16px; cursor: pointer; border-radius: 4px; margin-top: 10px; font-weight: bold; width: 100%; transition: 0.2s; box-sizing: border-box; }
+        .btn-main:hover { background: #2ecc71; }
+        .btn-blue { background: #2980b9; }
+        .btn-blue:hover { background: #3498db; }
+        
+        #sheetContainer { background: #fff; border-radius: 12px; color: #000; overflow: hidden; margin-top: 15px; display: flex; flex-direction: column; }
+        
+        #sheetContainer:fullscreen { overflow-y: auto; border-radius: 0; }
+        #sheetContainer:-webkit-full-screen { overflow-y: auto; border-radius: 0; }
+        
+        .toolbar { background: #ecf0f1; padding: 10px 15px; border-bottom: 2px solid #bdc3c7; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; position: sticky; top: 0; z-index: 10; }
+        .toolbar-label { font-size: 0.9em; color: #7f8c8d; font-weight: bold; margin-right: 10px; }
+        .symbol-btn { background: #fff; border: 1px solid #bdc3c7; border-radius: 4px; padding: 6px 10px; font-size: 1.1em; cursor: pointer; transition: 0.1s; box-shadow: 0 2px 2px rgba(0,0,0,0.05); }
+        .symbol-btn:hover { background: #e0e6ed; border-color: #95a5a6; }
+        .symbol-btn:active { transform: translateY(1px); box-shadow: none; }
+        .fullscreen-btn { margin-left: auto; background: #34495e; color: #fff; border-color: #2c3e50; }
+        .fullscreen-btn:hover { background: #2c3e50; }
+        
+        #visualCanvas { padding: 20px; min-height: 400px; outline: none; overflow-y: auto; max-height: 700px; }
+        #sheetContainer:fullscreen #visualCanvas { max-height: none; }
+        #visualCanvas:focus { background: #fafbfc; }
+        
+        h2, p { margin-top: 0; color: #bdc3c7; }
+        .instruction { font-size: 0.9em; margin-bottom: 10px; color: #7f8c8d; }
+        
+        details { background: #1a252f; border-radius: 8px; padding: 10px 20px; border: 1px solid #34495e; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        summary { font-size: 1.2em; font-weight: bold; cursor: pointer; color: #a8e6cf; outline: none; list-style: none; padding: 10px 0; }
+        summary::-webkit-details-marker { display: none; }
+        .collapsible-content { margin-top: 15px; padding-top: 15px; border-top: 1px solid #34495e; }
+    </style>
+</head>
+<body>
+
+    <details id="inputSection" open>
+        <summary>Step 1: Paste Code to Load Sheet (Click to Expand/Collapse)</summary>
+        <div class="collapsible-content">
+            <p class="instruction">Paste your HTML code from Planar Ally here to load your sheet.</p>
+            <textarea id="inputHtml" placeholder="Paste HTML here..."></textarea>
+            <button onclick="loadSheet()" class="btn-main">Load Sheet & Hide This Code</button>
+        </div>
+    </details>
+
+    <div class="panel">
+        <h2 style="color: #fff;">Step 2: Edit Visually</h2>
+        <p class="instruction" style="color: #bdc3c7;">Click to edit text. HP and EXP bars will update automatically when you change their numbers!</p>
+        
+        <button onclick="exportSheet()" class="btn-main btn-blue" style="font-size: 1.2em; padding: 15px;">Finish Editing & Copy New HTML</button>
+
+        <div id="sheetContainer" class="editor-container">
+            <div class="toolbar">
+                <span class="toolbar-label">Quick Swap:</span>
+                <button class="symbol-btn" onmousedown="event.preventDefault(); insertSymbol('☑')">☑ Checked</button>
+                <button class="symbol-btn" onmousedown="event.preventDefault(); insertSymbol('☐')">☐ Empty Box</button>
+                <button class="symbol-btn" onmousedown="event.preventDefault(); insertSymbol('🟢')">🟢 Success</button>
+                <button class="symbol-btn" onmousedown="event.preventDefault(); insertSymbol('🔴')">🔴 Fail</button>
+                <button class="symbol-btn" onmousedown="event.preventDefault(); insertSymbol('⚪')">⚪ Empty Circle</button>
+                
+                <button class="symbol-btn" onmousedown="event.preventDefault(); changePortrait()">🖼️ Change Portrait</button>
+                
+                <button class="symbol-btn fullscreen-btn" onclick="toggleFullscreen()" title="Toggle Fullscreen">⛶ Fullscreen</button>
+            </div>
+            
+            <div id="visualCanvas" contenteditable="true" spellcheck="false">
+                <p style="color: #7f8c8d; text-align: center; margin-top: 50px;">Your character sheet will appear here after you paste your code above.</p>
+            </div>
+        </div>
+    </div>
+
+    <details id="outputSection">
+        <summary>Step 3: View Updated Code (Click to Expand/Collapse)</summary>
+        <div class="collapsible-content">
+            <p class="instruction">Your updated HTML is generated here automatically when you click the Finish button above.</p>
+            <textarea id="outputHtml" readonly placeholder="Your updated HTML will appear here..."></textarea>
+        </div>
+    </details>
+
+    <script>
+        document.getElementById('visualCanvas').addEventListener('input', updateBars);
+
+        function updateBars() {
+            const canvas = document.getElementById('visualCanvas');
+            const spans = canvas.querySelectorAll('span');
+            
+            spans.forEach(span => {
+                const text = span.innerText.trim();
+                if (text === 'Hit Points' || text === 'Experience') {
+                    const numbersSpan = span.nextElementSibling;
+                    if (numbersSpan) {
+                        const cleanText = numbersSpan.innerText.replace(/,/g, '');
+                        const match = cleanText.match(/(\d+)\s*\/\s*(\d+)/);
+                        
+                        if (match) {
+                            const current = parseFloat(match[1]);
+                            const max = parseFloat(match[2]);
+                            
+                            let percentage = (max > 0) ? (current / max) * 100 : 0;
+                            if (percentage > 100) percentage = 100;
+                            if (percentage < 0) percentage = 0;
+
+                            const flexDiv = span.parentElement;
+                            const wrapperDiv = flexDiv.nextElementSibling;
+                            if (wrapperDiv && wrapperDiv.children.length > 0) {
+                                wrapperDiv.children[0].style.width = percentage + '%';
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function loadSheet() {
+            const rawHtml = document.getElementById('inputHtml').value;
+            document.getElementById('visualCanvas').innerHTML = rawHtml;
+            document.getElementById('inputSection').removeAttribute('open');
+            updateBars();
+
+            const sheetContainer = document.getElementById('sheetContainer');
+            if (sheetContainer.requestFullscreen) {
+                sheetContainer.requestFullscreen();
+            } else if (sheetContainer.webkitRequestFullscreen) {
+                sheetContainer.webkitRequestFullscreen();
+            } else if (sheetContainer.msRequestFullscreen) {
+                sheetContainer.msRequestFullscreen();
+            }
+        }
+
+        function exportSheet() {
+            updateBars();
+            const updatedHtml = document.getElementById('visualCanvas').innerHTML;
+            const outputBox = document.getElementById('outputHtml');
+            
+            outputBox.value = updatedHtml;
+            document.getElementById('outputSection').setAttribute('open', 'true');
+            
+            outputBox.select();
+            document.execCommand('copy');
+            alert("Success! The updated HTML has been copied to your clipboard. You can now paste it directly back into Planar Ally.");
+        }
+
+        function insertSymbol(symbol) {
+            document.getElementById('visualCanvas').focus();
+            document.execCommand('insertText', false, symbol);
+        }
+
+        function changePortrait() {
+            const canvas = document.getElementById('visualCanvas');
+            const img = canvas.querySelector('img'); // Finds the character portrait
+            
+            if (img) {
+                let currentUrl = img.getAttribute('src');
+                if (currentUrl.includes("PASTE") || currentUrl.includes("URL")) {
+                    currentUrl = ""; 
+                }
+                
+                const newUrl = prompt("Paste the direct URL to your character art (e.g., ending in .png or .jpg):", currentUrl);
+                
+                if (newUrl !== null && newUrl.trim() !== "") {
+                    img.src = newUrl.trim();
+                }
+            } else {
+                alert("Could not find a portrait image on this sheet to update!");
+            }
+        }
+
+        function toggleFullscreen() {
+            const sheetContainer = document.getElementById('sheetContainer');
+            if (!document.fullscreenElement) {
+                if (sheetContainer.requestFullscreen) sheetContainer.requestFullscreen();
+                else if (sheetContainer.webkitRequestFullscreen) sheetContainer.webkitRequestFullscreen();
+                else if (sheetContainer.msRequestFullscreen) sheetContainer.msRequestFullscreen();
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+                else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                else if (document.msExitFullscreen) document.msExitFullscreen();
+            }
+        }
+    </script>
+</body>
+</html>
