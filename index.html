@@ -4,96 +4,359 @@
     <meta charset="UTF-8">
     <title>Visual Character Sheet Editor</title>
     <style>
-        body { font-family: sans-serif; background: #2c3e50; color: #fff; padding: 20px; display: flex; flex-direction: column; gap: 20px; max-width: 1000px; margin: 0 auto; }
-        .panel { background: #1a252f; padding: 20px; border-radius: 8px; display: flex; flex-direction: column; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-        textarea { width: 100%; height: 150px; background: #0b141a; color: #a8e6cf; border: 1px solid #34495e; padding: 10px; font-family: monospace; border-radius: 4px; resize: vertical; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #0f172a; color: #e2e8f0; padding: 20px; display: flex; flex-direction: column; gap: 20px; max-width: 1000px; margin: 0 auto; }
+        .panel { background: #1e293b; padding: 20px; border-radius: 12px; display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 1px solid #334155; }
+        textarea { width: 100%; height: 150px; background: #0b1120; color: #34d399; border: 1px solid #475569; padding: 15px; font-family: 'Fira Code', monospace; border-radius: 8px; resize: vertical; box-sizing: border-box; line-height: 1.4; }
         
-        .btn-main { background: #27ae60; color: #fff; border: none; padding: 12px 20px; font-size: 16px; cursor: pointer; border-radius: 4px; margin-top: 10px; font-weight: bold; width: 100%; transition: 0.2s; box-sizing: border-box; }
-        .btn-main:hover { background: #2ecc71; }
-        .btn-blue { background: #2980b9; }
-        .btn-blue:hover { background: #3498db; }
+        .btn-main { background: #10b981; color: #fff; border: none; padding: 12px 20px; font-size: 16px; cursor: pointer; border-radius: 8px; margin-top: 10px; font-weight: bold; width: 100%; transition: all 0.2s ease; box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2); }
+        .btn-main:hover { background: #059669; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(16, 185, 129, 0.3); }
+        .btn-blue { background: #3b82f6; box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2); }
+        .btn-blue:hover { background: #2563eb; box-shadow: 0 6px 12px rgba(59, 130, 246, 0.3); }
         
-        #sheetContainer { background: #fff; border-radius: 12px; color: #000; overflow: hidden; margin-top: 15px; display: flex; flex-direction: column; }
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #0f172a; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 5px; border: 2px solid #0f172a; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+        #sheetContainer { background: #1e293b; border-radius: 12px; color: #000; overflow: hidden; margin-top: 15px; display: flex; flex-direction: column; position: relative; border: 1px solid #334155; }
+        #sheetContainer:fullscreen { overflow-y: auto; border-radius: 0; border: none; }
+        #sheetContainer:-webkit-full-screen { overflow-y: auto; border-radius: 0; border: none; }
         
-        #sheetContainer:fullscreen { overflow-y: auto; border-radius: 0; }
-        #sheetContainer:-webkit-full-screen { overflow-y: auto; border-radius: 0; }
+        .toolbar { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 12px 20px; border-bottom: 1px solid #334155; display: flex; flex-direction: column; gap: 10px; position: sticky; top: 0; z-index: 10; }
+        .toolbar-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; width: 100%; }
+        .toolbar-label { font-size: 0.8em; color: #94a3b8; font-weight: bold; margin-right: 5px; text-transform: uppercase; letter-spacing: 1.5px; }
         
-        .toolbar { background: #ecf0f1; padding: 10px 15px; border-bottom: 2px solid #bdc3c7; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; position: sticky; top: 0; z-index: 10; }
-        .toolbar-label { font-size: 0.9em; color: #7f8c8d; font-weight: bold; margin-right: 10px; }
-        .symbol-btn { background: #fff; border: 1px solid #bdc3c7; border-radius: 4px; padding: 6px 10px; font-size: 1.1em; cursor: pointer; transition: 0.1s; box-shadow: 0 2px 2px rgba(0,0,0,0.05); }
-        .symbol-btn:hover { background: #e0e6ed; border-color: #95a5a6; }
+        .symbol-btn { background: #1e293b; border: 1px solid #475569; color: #f8fafc; border-radius: 6px; padding: 8px 14px; font-size: 1.2em; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .symbol-btn:hover { background: #334155; border-color: #64748b; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.4); }
         .symbol-btn:active { transform: translateY(1px); box-shadow: none; }
-        .fullscreen-btn { margin-left: auto; background: #34495e; color: #fff; border-color: #2c3e50; }
-        .fullscreen-btn:hover { background: #2c3e50; }
+        .fullscreen-btn { margin-left: auto; background: #3b82f6; color: #fff; border-color: #2563eb; }
+        .fullscreen-btn:hover { background: #2563eb; }
+        .divider { border-left: 2px solid #334155; margin: 0 5px; height: 24px; }
         
-        #visualCanvas { padding: 20px; min-height: 400px; outline: none; overflow-y: auto; max-height: 700px; }
+        #visualCanvas { padding: 20px; min-height: 400px; outline: none; overflow-y: auto; max-height: 700px; background-color: #0f172a; /* Outer dark area surrounding sheet */ }
         #sheetContainer:fullscreen #visualCanvas { max-height: none; }
-        #visualCanvas:focus { background: #fafbfc; }
+        #visualCanvas:focus { background-color: #1e293b; }
         
-        /* Fixed: Removed global 'p' color styling so it doesn't wash out your sheet */
-        h2 { margin-top: 0; color: #fff; }
+        h2 { margin-top: 0; color: #f8fafc; font-weight: 600; letter-spacing: 0.5px; }
         p { margin-top: 0; }
-        .instruction { font-size: 0.9em; margin-bottom: 10px; color: #bdc3c7; }
+        .instruction { font-size: 0.95em; margin-bottom: 15px; color: #94a3b8; }
         
-        details { background: #1a252f; border-radius: 8px; padding: 10px 20px; border: 1px solid #34495e; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-        summary { font-size: 1.2em; font-weight: bold; cursor: pointer; color: #a8e6cf; outline: none; list-style: none; padding: 10px 0; }
-        summary::-webkit-details-marker { display: none; }
-        .collapsible-content { margin-top: 15px; padding-top: 15px; border-top: 1px solid #34495e; }
+        #inputSection, #outputSection { background: #1e293b; border-radius: 12px; padding: 15px 20px; border: 1px solid #334155; box-shadow: 0 4px 6px rgba(0,0,0,0.3); margin-bottom: 15px; }
+        #inputSection summary, #outputSection summary { font-size: 1.2em; font-weight: bold; cursor: pointer; color: #34d399; outline: none; list-style: none; padding: 5px 0; transition: color 0.2s; }
+        #inputSection summary:hover, #outputSection summary:hover { color: #10b981; }
+        #inputSection summary::-webkit-details-marker, #outputSection summary::-webkit-details-marker { display: none; }
+        .collapsible-content { margin-top: 15px; padding-top: 15px; border-top: 1px solid #334155; }
+        
+        .click-sym { user-select: none; -webkit-user-select: none; font-family: sans-serif; transition: all 0.15s ease; display: inline-block; }
+        .click-sym:hover { transform: scale(1.3); text-shadow: 0 0 8px rgba(255,255,255,0.5); }
+
+        .editor-injected-ui button { transition: all 0.2s ease !important; }
+        .editor-injected-ui button:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important; filter: brightness(1.1); }
+        .tracker-add:hover { box-shadow: 0 0 8px rgba(39, 174, 96, 0.4) !important; }
+        .tracker-rem:hover { box-shadow: 0 0 8px rgba(192, 57, 43, 0.4) !important; }
+
+        .app-modal-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); z-index: 999; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .app-modal { background: #1e293b; padding: 25px; border-radius: 12px; border: 1px solid #475569; box-shadow: 0 20px 40px rgba(0,0,0,0.8); min-width: 350px; max-width: 90%; color: #f8fafc; font-family: 'Segoe UI', sans-serif; }
+        .app-modal h3 { margin-top: 0; border-bottom: 1px solid #334155; padding-bottom: 12px; color: #34d399; font-size: 1.4em; }
+        .app-modal p { color: #cbd5e1; line-height: 1.5; margin-bottom: 15px; }
+        .app-modal input { width: 100%; padding: 12px; background: #0f172a; color: #fff; border: 1px solid #475569; border-radius: 6px; margin-bottom: 15px; font-size: 1em; box-sizing: border-box; transition: border 0.2s; }
+        .app-modal input:focus { border-color: #3b82f6; outline: none; }
+        .app-modal-btns { display: flex; gap: 10px; justify-content: flex-end; }
+        .app-modal-btns button { padding: 10px 18px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1em; }
+        
+        .save-slot { display: flex; justify-content: space-between; align-items: center; background: #0f172a; padding: 12px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #334155; transition: all 0.2s; }
+        .save-slot:hover { border-color: #475569; background: #1e293b; }
+        .save-slot span { flex-grow: 1; font-weight: bold; margin-right: 10px; color: #f8fafc; }
+        .save-action-btn { cursor: pointer; border: none; padding: 8px 12px; border-radius: 6px; font-size: 1.1em; margin-left: 5px; transition: all 0.2s; }
+        .save-load-btn { background: #3b82f6; color: #fff; }
+        .save-load-btn:hover { background: #2563eb; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(59, 130, 246, 0.4); }
+        .save-del-btn { background: #ef4444; color: #fff; }
+        .save-del-btn:hover { background: #dc2626; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(239, 68, 68, 0.4); }
     </style>
 </head>
 <body>
 
     <details id="inputSection" open>
-        <summary>Step 1: Paste Code to Load Sheet (Click to Expand/Collapse)</summary>
+        <summary>⚙️ Step 1: Paste Code to Load Sheet</summary>
         <div class="collapsible-content">
-            <p class="instruction">Paste your HTML code from Planar Ally here to load your sheet.</p>
+            <p class="instruction">Paste your HTML code here to load a sheet manually.</p>
             <textarea id="inputHtml" placeholder="Paste HTML here..."></textarea>
             <button onclick="loadSheet()" class="btn-main">Load Sheet & Enter Fullscreen</button>
         </div>
     </details>
 
     <div class="panel">
-        <h2>Step 2: Edit Visually</h2>
-        <p class="instruction">Click to edit text. HP and EXP bars will update automatically when you change their numbers!</p>
+        <h2>Step 2: Play & Edit</h2>
+        <p class="instruction">Click directly on any checkbox or circle inside the sheet to instantly toggle it! Click ➕ or ➖ next to brackets to add more slots.</p>
         
-        <button onclick="exportSheet()" class="btn-main btn-blue" style="font-size: 1.2em; padding: 15px;">Finish Editing & Copy New HTML</button>
+        <button onclick="exportSheet()" class="btn-main btn-blue" style="font-size: 1.2em; padding: 15px;">💾 Export HTML for DM / Backup</button>
 
         <div id="sheetContainer" class="editor-container">
+            
             <div class="toolbar">
-                <span class="toolbar-label">Quick Swap:</span>
-                <button class="symbol-btn" onmousedown="event.preventDefault(); insertSymbol('☑')">☑ Checked</button>
-                <button class="symbol-btn" onmousedown="event.preventDefault(); insertSymbol('☐')">☐ Empty Box</button>
-                <button class="symbol-btn" onmousedown="event.preventDefault(); insertSymbol('🟢')">🟢 Success</button>
-                <button class="symbol-btn" onmousedown="event.preventDefault(); insertSymbol('🔴')">🔴 Fail</button>
-                <button class="symbol-btn" onmousedown="event.preventDefault(); insertSymbol('⚪')">⚪ Empty Circle</button>
-                
-                <button class="symbol-btn" onmousedown="event.preventDefault(); changePortrait()">🔗 Paste Image Link</button>
-                <button class="symbol-btn" onmousedown="event.preventDefault(); changeTheme()">🎨 Theme</button>
+                <div class="toolbar-row">
+                    <span class="toolbar-label">Quick Insert:</span>
+                    <button class="symbol-btn" onmousedown="event.preventDefault(); insertSymbol('☑')" title="Insert Checked Box">☑</button>
+                    <button class="symbol-btn" onmousedown="event.preventDefault(); insertSymbol('☐')" title="Insert Empty Box">☐</button>
+                    <button class="symbol-btn" onmousedown="event.preventDefault(); insertSymbol('🟢')" title="Insert Success Circle">🟢</button>
+                    <button class="symbol-btn" onmousedown="event.preventDefault(); insertSymbol('🔴')" title="Insert Fail Circle">🔴</button>
+                    <button class="symbol-btn" onmousedown="event.preventDefault(); insertSymbol('⚪')" title="Insert Empty Circle">⚪</button>
+                    
+                    <span class="divider"></span>
+                    
+                    <span class="toolbar-label">Tools:</span>
+                    <button class="symbol-btn" onmousedown="event.preventDefault(); triggerUndo()" title="Undo">↩️</button>
+                    <button class="symbol-btn" onmousedown="event.preventDefault(); triggerRedo()" title="Redo">↪️</button>
+                    <button class="symbol-btn" onmousedown="event.preventDefault(); saveLocal()" title="Save Character to Browser" style="color: #34d399;">💾</button>
+                    <button class="symbol-btn" onmousedown="event.preventDefault(); showLoadMenu()" title="Load Character from Browser" style="color: #60a5fa;">📂</button>
+                    <button class="symbol-btn" onmousedown="event.preventDefault(); changePortrait()" title="Change Portrait Image">🖼️</button>
+                    <button class="symbol-btn" onmousedown="event.preventDefault(); changeTheme()" title="Change Theme Color">🎨</button>
 
-                <button class="symbol-btn fullscreen-btn" onclick="toggleFullscreen()" title="Toggle Fullscreen">⛶ Fullscreen</button>
+                    <button class="symbol-btn fullscreen-btn" onclick="toggleFullscreen()" title="Toggle Fullscreen">⛶</button>
+                </div>
             </div>
             
             <div id="visualCanvas" contenteditable="true" spellcheck="false">
-                <p style="color: #7f8c8d; text-align: center; margin-top: 50px;">Your character sheet will appear here after you paste your code above.</p>
+                <p style="color: #64748b; text-align: center; margin-top: 50px; font-size: 1.2em;" id="loadingText">Waiting for character data...</p>
             </div>
+
+            <div id="appModalOverlay" class="app-modal-overlay">
+                <div class="app-modal">
+                    <h3 id="appModalTitle">Title</h3>
+                    <p id="appModalMessage">Message</p>
+                    <input type="text" id="appModalInput" />
+                    <div id="appModalSaveList" style="max-height: 250px; overflow-y: auto; margin-bottom: 15px; display: none;"></div>
+                    <div class="app-modal-btns">
+                        <button id="appModalCancel" class="btn-main" style="background: #475569; width: auto;">Cancel</button>
+                        <button id="appModalOk" class="btn-main btn-blue" style="width: auto;">OK</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
     <details id="outputSection">
-        <summary>Step 3: View Updated Code (Click to Expand/Collapse)</summary>
+        <summary>⚙️ Step 3: View Exported Code</summary>
         <div class="collapsible-content">
-            <p class="instruction">Your updated HTML is generated here automatically when you click the Finish button above.</p>
+            <p class="instruction">Your updated HTML is generated here automatically when you click the Export button above.</p>
             <textarea id="outputHtml" readonly placeholder="Your updated HTML will appear here..."></textarea>
         </div>
     </details>
 
     <script>
-        document.getElementById('visualCanvas').addEventListener('input', updateBars);
+        document.addEventListener("DOMContentLoaded", () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const charFile = urlParams.get('char');
+            
+            if (charFile) {
+                document.getElementById('inputSection').removeAttribute('open');
+                document.getElementById('loadingText').innerText = `Summoning ${charFile}...`;
+                
+                fetch(`Characters/${charFile}.html`)
+                    .then(response => {
+                        if (!response.ok) throw new Error("Character file not found.");
+                        return response.text();
+                    })
+                    .then(html => {
+                        document.getElementById('visualCanvas').innerHTML = html;
+                        makeSymbolsClickable();
+                        updateBars();
+                        injectInlineControls();
+                        pushState();
+                    })
+                    .catch(err => {
+                        document.getElementById('loadingText').innerText = "Failed to load character.";
+                        showAppModal('alert', 'Load Error', `Could not load ${charFile}.html.`);
+                    });
+            } else {
+                document.getElementById('loadingText').innerText = "Paste your character HTML above to begin.";
+            }
+        });
+
+        function showAppModal(type, title, message, defaultInput = '') {
+            return new Promise((resolve) => {
+                const overlay = document.getElementById('appModalOverlay');
+                const titleEl = document.getElementById('appModalTitle');
+                const msgEl = document.getElementById('appModalMessage');
+                const inputEl = document.getElementById('appModalInput');
+                const saveListEl = document.getElementById('appModalSaveList');
+                const okBtn = document.getElementById('appModalOk');
+                const cancelBtn = document.getElementById('appModalCancel');
+
+                titleEl.innerText = title;
+                msgEl.innerText = message;
+                msgEl.style.display = message ? 'block' : 'none';
+                saveListEl.style.display = 'none';
+                okBtn.style.display = 'inline-block';
+                cancelBtn.style.display = 'inline-block';
+
+                if (type === 'prompt') {
+                    inputEl.style.display = 'block';
+                    inputEl.value = defaultInput;
+                } else if (type === 'confirm') {
+                    inputEl.style.display = 'none';
+                    okBtn.innerText = "Yes";
+                } else if (type === 'alert') {
+                    inputEl.style.display = 'none';
+                    cancelBtn.style.display = 'none';
+                    okBtn.innerText = "OK";
+                } else if (type === 'loadMenu') {
+                    inputEl.style.display = 'none';
+                    okBtn.style.display = 'none'; 
+                    saveListEl.style.display = 'block';
+                    cancelBtn.innerText = "Close";
+                }
+
+                overlay.style.display = 'flex';
+                if (type === 'prompt') inputEl.focus();
+
+                const cleanup = () => {
+                    overlay.style.display = 'none';
+                    okBtn.onclick = null;
+                    cancelBtn.onclick = null;
+                };
+
+                okBtn.onclick = () => {
+                    cleanup();
+                    resolve(type === 'prompt' ? inputEl.value : true);
+                };
+
+                cancelBtn.onclick = () => {
+                    cleanup();
+                    resolve(type === 'prompt' ? null : false);
+                };
+            });
+        }
+
+        let undoStack = [];
+        let redoStack = [];
+        let debounceTimer;
+
+        function pushState() {
+            const canvas = document.getElementById('visualCanvas');
+            const clone = canvas.cloneNode(true);
+            clone.querySelectorAll('.editor-injected-ui').forEach(el => el.remove());
+            
+            const stateHtml = clone.innerHTML;
+            if (undoStack.length === 0 || undoStack[undoStack.length - 1] !== stateHtml) {
+                undoStack.push(stateHtml);
+                redoStack = []; 
+                if (undoStack.length > 50) undoStack.shift(); 
+            }
+        }
+
+        function triggerUndo() {
+            if (undoStack.length > 1) {
+                const currentState = undoStack.pop();
+                redoStack.push(currentState);
+                restoreState(undoStack[undoStack.length - 1]);
+            }
+        }
+
+        function triggerRedo() {
+            if (redoStack.length > 0) {
+                const nextState = redoStack.pop();
+                undoStack.push(nextState);
+                restoreState(nextState);
+            }
+        }
+
+        function restoreState(html) {
+            document.getElementById('visualCanvas').innerHTML = html;
+            updateBars();
+            makeSymbolsClickable();
+            injectInlineControls();
+        }
+
+        document.getElementById('visualCanvas').addEventListener('input', () => {
+            updateBars();
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(pushState, 1000); 
+        });
+
+        async function saveLocal() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const charFile = urlParams.get('char') || "Character";
+            
+            const defaultName = charFile + " - " + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            const name = await showAppModal('prompt', '💾 Save Character', 'Enter a name for this save slot:', defaultName);
+            if (!name) return;
+            
+            const clone = document.getElementById('visualCanvas').cloneNode(true);
+            clone.querySelectorAll('.editor-injected-ui').forEach(el => el.remove());
+            clone.querySelectorAll('.click-sym').forEach(el => {
+                const textNode = document.createTextNode(el.innerText);
+                el.parentNode.replaceChild(textNode, el);
+            });
+            
+            let saves = JSON.parse(localStorage.getItem('dnd_saves') || '{}');
+            saves[name] = clone.innerHTML;
+            localStorage.setItem('dnd_saves', JSON.stringify(saves));
+            
+            await showAppModal('alert', 'Success', `Character successfully saved locally as "${name}"!`);
+        }
+
+        async function showLoadMenu() {
+            const saves = JSON.parse(localStorage.getItem('dnd_saves') || '{}');
+            const saveList = document.getElementById('appModalSaveList');
+            saveList.innerHTML = '';
+            
+            const keys = Object.keys(saves);
+            if (keys.length === 0) {
+                saveList.innerHTML = '<p style="color:#94a3b8; font-style:italic; text-align:center; padding: 20px;">No saves found.<br>Create one using the 💾 Save button!</p>';
+            } else {
+                keys.reverse().forEach(key => {
+                    const div = document.createElement('div');
+                    div.className = 'save-slot';
+                    
+                    const span = document.createElement('span');
+                    span.innerText = key;
+                    
+                    const loadBtn = document.createElement('button');
+                    loadBtn.className = 'save-action-btn save-load-btn';
+                    loadBtn.title = "Load";
+                    loadBtn.innerText = '📂';
+                    loadBtn.onclick = async () => {
+                        document.getElementById('appModalOverlay').style.display = 'none'; 
+                        const isSure = await showAppModal('confirm', 'Warning', `Load "${key}"? Any unsaved changes will be lost.`);
+                        if(isSure) {
+                            document.getElementById('visualCanvas').innerHTML = saves[key];
+                            updateBars();
+                            makeSymbolsClickable();
+                            injectInlineControls();
+                            undoStack = [];
+                            redoStack = [];
+                            pushState();
+                        }
+                    };
+                    
+                    const delBtn = document.createElement('button');
+                    delBtn.className = 'save-action-btn save-del-btn';
+                    delBtn.title = "Delete Save";
+                    delBtn.innerText = '🗑️';
+                    delBtn.onclick = async () => {
+                        document.getElementById('appModalOverlay').style.display = 'none'; 
+                        const isSure = await showAppModal('confirm', 'Delete Save', `Are you sure you want to permanently delete "${key}"?`);
+                        if(isSure) {
+                            delete saves[key];
+                            localStorage.setItem('dnd_saves', JSON.stringify(saves));
+                            showLoadMenu(); 
+                        }
+                    };
+                    
+                    div.appendChild(span);
+                    div.appendChild(loadBtn);
+                    div.appendChild(delBtn);
+                    saveList.appendChild(div);
+                });
+            }
+            showAppModal('loadMenu', '📂 Load Saved Character', '');
+        }
 
         function updateBars() {
             const canvas = document.getElementById('visualCanvas');
             const spans = canvas.querySelectorAll('span');
-            
             spans.forEach(span => {
                 const text = span.innerText.trim();
                 if (text === 'Hit Points' || text === 'Experience') {
@@ -101,15 +364,12 @@
                     if (numbersSpan) {
                         const cleanText = numbersSpan.innerText.replace(/,/g, '');
                         const match = cleanText.match(/(\d+)\s*\/\s*(\d+)/);
-                        
                         if (match) {
                             const current = parseFloat(match[1]);
                             const max = parseFloat(match[2]);
-                            
                             let percentage = (max > 0) ? (current / max) * 100 : 0;
                             if (percentage > 100) percentage = 100;
                             if (percentage < 0) percentage = 0;
-
                             const flexDiv = span.parentElement;
                             const wrapperDiv = flexDiv.nextElementSibling;
                             if (wrapperDiv && wrapperDiv.children.length > 0) {
@@ -125,87 +385,376 @@
             const rawHtml = document.getElementById('inputHtml').value;
             document.getElementById('visualCanvas').innerHTML = rawHtml;
             document.getElementById('inputSection').removeAttribute('open');
+            
+            makeSymbolsClickable(); 
             updateBars();
+            injectInlineControls(); 
+            
+            undoStack = [];
+            redoStack = [];
+            pushState(); 
             
             const sheetContainer = document.getElementById('sheetContainer');
-            if (sheetContainer.requestFullscreen) {
-                sheetContainer.requestFullscreen();
-            } else if (sheetContainer.webkitRequestFullscreen) {
-                sheetContainer.webkitRequestFullscreen();
-            } else if (sheetContainer.msRequestFullscreen) {
-                sheetContainer.msRequestFullscreen();
-            }
+            if (sheetContainer.requestFullscreen) sheetContainer.requestFullscreen();
+            else if (sheetContainer.webkitRequestFullscreen) sheetContainer.webkitRequestFullscreen();
+            else if (sheetContainer.msRequestFullscreen) sheetContainer.msRequestFullscreen();
         }
 
-        function exportSheet() {
+        async function exportSheet() {
             updateBars();
-            const updatedHtml = document.getElementById('visualCanvas').innerHTML;
+            const clone = document.getElementById('visualCanvas').cloneNode(true);
+            clone.querySelectorAll('.editor-injected-ui').forEach(el => el.remove());
+            clone.querySelectorAll('.click-sym').forEach(el => {
+                const textNode = document.createTextNode(el.innerText);
+                el.parentNode.replaceChild(textNode, el);
+            });
+            
+            let rawHtml = clone.innerHTML;
+            let minifiedHtml = rawHtml.replace(/\n\s+/g, ' ') 
+                                      .replace(/\r/g, '')      
+                                      .replace(/>\s+</g, '><') 
+                                      .trim();
+            
             const outputBox = document.getElementById('outputHtml');
-            
-            outputBox.value = updatedHtml;
+            outputBox.value = minifiedHtml;
             document.getElementById('outputSection').setAttribute('open', 'true');
-            
             outputBox.select();
             document.execCommand('copy');
-            alert("✅ Success! The updated HTML has been copied to your clipboard. You can now paste it directly back into Planar Ally.");
+            
+            await showAppModal('alert', 'Copied!', '✅ Success! The minified HTML has been copied to your clipboard.');
         }
 
         function insertSymbol(symbol) {
             document.getElementById('visualCanvas').focus();
-            document.execCommand('insertText', false, symbol);
+            document.execCommand('insertHTML', false, `<span class="click-sym" style="cursor:pointer;" onclick="toggleSym(this, event)">${symbol}</span>`);
+            pushState();
         }
 
-        function changePortrait() {
+        function makeSymbolsClickable() {
             const canvas = document.getElementById('visualCanvas');
-            const img = canvas.querySelector('img'); 
+            const walker = document.createTreeWalker(canvas, NodeFilter.SHOW_TEXT, null, false);
+            let node;
+            const nodesToReplace = [];
             
+            while(node = walker.nextNode()) {
+                if (node.parentNode && node.parentNode.classList && node.parentNode.classList.contains('click-sym')) continue;
+                if (node.parentNode && node.parentNode.closest('.editor-injected-ui')) continue;
+                if (/[☐☑⚪🟢🔴]/.test(node.nodeValue)) {
+                    nodesToReplace.push(node);
+                }
+            }
+            
+            nodesToReplace.forEach(n => {
+                let escaped = n.nodeValue.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                let html = escaped
+                    .replace(/☐/g, '<span class="click-sym" style="cursor:pointer;" onclick="toggleSym(this, event)">☐</span>')
+                    .replace(/☑/g, '<span class="click-sym" style="cursor:pointer;" onclick="toggleSym(this, event)">☑</span>')
+                    .replace(/⚪/g, '<span class="click-sym" style="cursor:pointer;" onclick="toggleSym(this, event)">⚪</span>')
+                    .replace(/🟢/g, '<span class="click-sym" style="cursor:pointer;" onclick="toggleSym(this, event)">🟢</span>')
+                    .replace(/🔴/g, '<span class="click-sym" style="cursor:pointer;" onclick="toggleSym(this, event)">🔴</span>');
+                
+                const temp = document.createElement('div');
+                temp.innerHTML = html;
+                while(temp.firstChild) {
+                    n.parentNode.insertBefore(temp.firstChild, n);
+                }
+                n.parentNode.removeChild(n);
+            });
+        }
+
+        window.toggleSym = function(el, event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const char = el.innerText.trim();
+            if (char === '☐') el.innerText = '☑';
+            else if (char === '☑') el.innerText = '☐';
+            else if (char === '⚪') el.innerText = '🟢';
+            else if (char === '🟢') el.innerText = '🔴';
+            else if (char === '🔴') el.innerText = '⚪';
+            pushState();
+        };
+
+        function injectInlineControls() {
+            const canvas = document.getElementById('visualCanvas');
+            canvas.querySelectorAll('.editor-injected-ui').forEach(el => el.remove());
+
+            const trackers = canvas.querySelectorAll('.slot-tracker');
+            trackers.forEach(t => {
+                const sym = t.getAttribute('data-sym') || '☐';
+                const addBtn = document.createElement('button');
+                addBtn.className = 'editor-injected-ui tracker-add';
+                addBtn.contentEditable = 'false';
+                addBtn.style.cssText = 'cursor: pointer; background: #e8f8f5; border: 1px solid #10b981; color: #10b981; font-size: 0.85em; padding: 2px 6px; border-radius: 4px; margin-left: 8px; font-weight: bold;';
+                addBtn.innerHTML = '➕';
+                addBtn.onclick = (e) => {
+                    e.preventDefault();
+                    const syms = t.querySelectorAll('.click-sym');
+                    if (syms.length > 0) {
+                        const lastSym = syms[syms.length - 1];
+                        lastSym.parentNode.insertBefore(document.createTextNode(' '), lastSym.nextSibling);
+                        const newSym = document.createElement('span');
+                        newSym.className = 'click-sym';
+                        newSym.style.cursor = 'pointer';
+                        newSym.setAttribute('onclick', 'toggleSym(this, event)');
+                        newSym.innerText = sym;
+                        lastSym.parentNode.insertBefore(newSym, lastSym.nextSibling.nextSibling);
+                        pushState();
+                    }
+                };
+
+                const remBtn = document.createElement('button');
+                remBtn.className = 'editor-injected-ui tracker-rem';
+                remBtn.contentEditable = 'false';
+                remBtn.style.cssText = 'cursor: pointer; background: #fef2f2; border: 1px solid #ef4444; color: #ef4444; font-size: 0.85em; padding: 2px 6px; border-radius: 4px; margin-left: 4px; font-weight: bold;';
+                remBtn.innerHTML = '➖';
+                remBtn.onclick = (e) => {
+                    e.preventDefault();
+                    const syms = t.querySelectorAll('.click-sym');
+                    if (syms.length > 0) {
+                        const lastSym = syms[syms.length - 1];
+                        if(lastSym.previousSibling && lastSym.previousSibling.nodeType === 3) lastSym.previousSibling.remove(); 
+                        lastSym.remove();
+                        pushState();
+                    }
+                };
+
+                t.appendChild(addBtn);
+                t.appendChild(remBtn);
+            });
+
+            const tables = canvas.querySelectorAll('table');
+            tables.forEach(table => {
+                const ctrlDiv = document.createElement('div');
+                ctrlDiv.className = 'editor-injected-ui';
+                ctrlDiv.contentEditable = 'false';
+                ctrlDiv.style.cssText = 'display: flex; gap: 8px; justify-content: flex-end; align-items: center;';
+                ctrlDiv.innerHTML = `
+                    <button onclick="addRowToTable(this)" style="cursor: pointer; background: #e8f8f5; border: 1px solid #10b981; color: #10b981; padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 0.85em;">➕ Add Row</button>
+                    <button onclick="removeRowFromTable(this)" style="cursor: pointer; background: #fef2f2; border: 1px solid #ef4444; color: #ef4444; padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 0.85em;">➖ Remove Last</button>
+                `;
+                
+                let nextEl = table.nextElementSibling;
+                if (nextEl && nextEl.classList.contains('spell-footer')) {
+                    nextEl.appendChild(ctrlDiv);
+                } else {
+                    ctrlDiv.style.marginTop = '8px';
+                    ctrlDiv.style.marginBottom = '20px';
+                    table.parentNode.insertBefore(ctrlDiv, table.nextSibling);
+                }
+            });
+
+            const masterTable = canvas.querySelector('#master-spell-list');
+            if (masterTable) {
+                const headers = masterTable.querySelectorAll('th');
+                headers.forEach((th, index) => {
+                    th.style.cursor = 'pointer';
+                    th.title = "Click to sort";
+                    
+                    const icon = document.createElement('span');
+                    icon.className = 'editor-injected-ui sort-icon';
+                    icon.innerHTML = ' ↕️';
+                    icon.style.fontSize = '0.8em';
+                    icon.style.opacity = '0.5';
+                    icon.style.marginLeft = '4px';
+                    th.appendChild(icon);
+
+                    th.onclick = () => sortTable(masterTable, index);
+                });
+            }
+
+            const grimoire = canvas.querySelector('#grimoire-section');
+            if (grimoire) {
+                const addLvlDiv = document.createElement('div');
+                addLvlDiv.className = 'editor-injected-ui';
+                addLvlDiv.contentEditable = 'false';
+                addLvlDiv.style.cssText = 'display: flex; justify-content: center; margin-top: 25px; padding-top: 20px; border-top: 2px dashed #d4c4a8;';
+                addLvlDiv.innerHTML = `
+                    <button onclick="addSpellLevel()" style="cursor: pointer; background: #3b82f6; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; font-size: 1em; box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);">📖 Build New Spell Level</button>
+                `;
+                grimoire.appendChild(addLvlDiv);
+
+                const blocks = grimoire.querySelectorAll('.spell-level-block');
+                blocks.forEach(block => {
+                    const headerFlex = block.querySelector('.spell-header'); 
+                    if (headerFlex) {
+                        const remBtn = document.createElement('button');
+                        remBtn.className = 'editor-injected-ui';
+                        remBtn.contentEditable = 'false';
+                        remBtn.style.cssText = 'cursor: pointer; background: transparent; border: 1px solid #ef4444; color: #ef4444; padding: 4px 10px; border-radius: 4px; font-size: 0.85em; margin-left: 15px; flex-shrink: 0; font-weight: bold; transition: all 0.2s;';
+                        remBtn.innerHTML = '🗑️ Delete Level';
+                        remBtn.onmouseover = () => { remBtn.style.background = '#fef2f2'; remBtn.style.transform = 'translateY(-2px)'; };
+                        remBtn.onmouseout = () => { remBtn.style.background = 'transparent'; remBtn.style.transform = 'translateY(0)'; };
+                        remBtn.onclick = async function() { 
+                            if(await showAppModal('confirm', 'Delete Level', 'Are you sure you want to permanently delete this entire spell level?')) {
+                                block.remove();
+                                pushState();
+                            }
+                        };
+                        headerFlex.appendChild(remBtn);
+                    }
+                });
+            }
+        }
+
+        function addRowToTable(btn) {
+            let prev = btn.parentElement.previousElementSibling;
+            if (btn.closest('.spell-footer')) {
+                prev = btn.closest('.spell-footer').previousElementSibling;
+            }
+            while(prev && prev.tagName !== 'TABLE') {
+                prev = prev.previousElementSibling;
+            }
+            
+            if (prev && prev.tagName === 'TABLE') {
+                const hasThead = prev.querySelector('thead') !== null;
+                const tbody = prev.querySelector('tbody') || prev;
+                const rows = tbody.querySelectorAll('tr');
+                
+                if (rows.length >= (hasThead ? 1 : 2)) {
+                    const lastRow = rows[rows.length - 1];
+                    const newRow = lastRow.cloneNode(true);
+                    newRow.querySelectorAll('td').forEach(td => td.innerHTML = '...');
+                    tbody.appendChild(newRow);
+                    makeSymbolsClickable(); 
+                    pushState();
+                }
+            }
+        }
+
+        function removeRowFromTable(btn) {
+            let prev = btn.parentElement.previousElementSibling;
+            if (btn.closest('.spell-footer')) {
+                prev = btn.closest('.spell-footer').previousElementSibling;
+            }
+            while(prev && prev.tagName !== 'TABLE') {
+                prev = prev.previousElementSibling;
+            }
+            
+            if (prev && prev.tagName === 'TABLE') {
+                const hasThead = prev.querySelector('thead') !== null;
+                const tbody = prev.querySelector('tbody') || prev;
+                const rows = tbody.querySelectorAll('tr');
+                
+                const minRows = hasThead ? 1 : 2; 
+                
+                if (rows.length > minRows) {
+                    rows[rows.length - 1].remove();
+                    pushState();
+                } else {
+                    showAppModal('alert', 'Action Prevented', 'You cannot delete the last remaining row!');
+                }
+            }
+        }
+
+        function sortTable(table, colIndex) {
+            const tbody = table.querySelector('tbody') || table;
+            const rowsArray = Array.from(tbody.querySelectorAll('tr'));
+            if (rowsArray.length <= 1 && table.querySelector('thead') === null) return;
+
+            let headerRow = null;
+            if (!table.querySelector('thead')) {
+                headerRow = rowsArray.shift(); 
+            }
+
+            let dir = table.getAttribute('data-sort-dir') === 'asc' ? 'desc' : 'asc';
+            table.setAttribute('data-sort-dir', dir);
+
+            table.querySelectorAll('.sort-icon').forEach(icon => {
+                icon.innerHTML = ' ↕️';
+                icon.style.opacity = '0.5';
+            });
+            
+            const headerContainer = table.querySelector('thead') ? table.querySelector('thead tr') : headerRow;
+            const activeIcon = headerContainer.querySelectorAll('th')[colIndex].querySelector('.sort-icon');
+            if (activeIcon) {
+                activeIcon.innerHTML = dir === 'asc' ? ' ⬇️' : ' ⬆️';
+                activeIcon.style.opacity = '1';
+            }
+
+            rowsArray.sort((a, b) => {
+                let valA = a.cells[colIndex].innerText.trim();
+                let valB = b.cells[colIndex].innerText.trim();
+
+                let numA = parseFloat(valA);
+                let numB = parseFloat(valB);
+
+                if (!isNaN(numA) && !isNaN(numB)) {
+                    return dir === 'asc' ? numA - numB : numB - numA;
+                }
+                return dir === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+            });
+
+            rowsArray.forEach(row => tbody.appendChild(row));
+            pushState(); 
+        }
+
+        async function addSpellLevel() {
+            const name = await showAppModal('prompt', 'Build New Spell Level', "Enter the new Spell Level name (e.g., '2nd Level Spells'):");
+            if (!name) return;
+            
+            const htmlBlock = `
+            <div class="spell-level-block" style="margin-top: 15px;">
+                <div class="spell-header" style="display: flex; align-items: center; border-bottom: 1px dashed #d4c4a8; padding-bottom: 5px; margin-bottom: 8px;">
+                    <h3 style="color: #8b1e0b; margin: 0; flex-grow: 1; font-family: 'Cinzel', serif;">${name}</h3>
+                </div>
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.95em; margin-bottom: 5px; color: #2b2b2b;">
+                    <tr style="background-color: #f4f1ea; text-align: left; font-size: 0.9em; color: #7f8c8d;">
+                        <th style="padding: 8px; border-radius: 6px 0 0 0;">Spell Name</th>
+                        <th style="padding: 8px;">Time</th>
+                        <th style="padding: 8px;">Range</th>
+                        <th style="padding: 8px; border-radius: 0 6px 0 0;">Notes / Effect</th>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #f4f1ea; transition: background 0.2s;" onmouseover="this.style.background='#fdfaf3'" onmouseout="this.style.background='transparent'">
+                        <td style="padding: 8px; font-weight: bold;">New Spell</td>
+                        <td style="padding: 8px;">1 Action</td>
+                        <td style="padding: 8px;">Touch</td>
+                        <td style="padding: 8px; color: #666;">Describe effect</td>
+                    </tr>
+                </table>
+                <div class="spell-footer" style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
+                    <div style="font-size: 1em; color: #2c3e50;">
+                        <strong>Slots:</strong> <span class="slot-tracker" data-sym="☐">[ ☐ ☐ ☐ ]</span>
+                    </div>
+                </div>
+            </div>`;
+            
+            const grimoire = document.getElementById('grimoire-section');
+            if (grimoire) {
+                const addButtonContainer = grimoire.lastElementChild;
+                addButtonContainer.insertAdjacentHTML('beforebegin', htmlBlock);
+                makeSymbolsClickable();
+                injectInlineControls();
+                pushState();
+            }
+        }
+
+        async function changePortrait() {
+            const img = document.querySelector('#visualCanvas img'); 
             if (img) {
-                let currentUrl = img.getAttribute('src');
-                if (!currentUrl || currentUrl.includes("PASTE") || currentUrl.includes("URL")) {
-                    currentUrl = ""; 
-                }
-                
-                const newUrl = prompt("Paste the direct URL to your character art (from your GitHub Megathread):", currentUrl);
-                
-                if (newUrl !== null && newUrl.trim() !== "") {
+                const newUrl = await showAppModal('prompt', 'Change Portrait', 'Paste direct image URL:', img.src);
+                if (newUrl) {
                     img.src = newUrl.trim();
+                    pushState();
                 }
             } else {
-                alert("Could not find a portrait image on this sheet to update!");
+                showAppModal('alert', 'Error', 'Could not find an image tag on this sheet!');
             }
         }
 
-        const themes = [
-            "linear-gradient(135deg, #1e3f20, #0a1c0b)", 
-            "linear-gradient(135deg, #8b0000, #3d0000)", 
-            "linear-gradient(135deg, #2c3e50, #000000)", 
-            "linear-gradient(135deg, #4b0082, #191970)", 
-            "linear-gradient(135deg, #b8860b, #556b2f)"  
-        ];
+        const themes = ["linear-gradient(135deg, #1e3f20, #0a1c0b)", "linear-gradient(135deg, #8b0000, #3d0000)", "linear-gradient(135deg, #2c3e50, #000000)", "linear-gradient(135deg, #4b0082, #191970)", "linear-gradient(135deg, #b8860b, #556b2f)"];
         let currentThemeIndex = 0;
-
         function changeTheme() {
-            const canvas = document.getElementById('visualCanvas');
-            const h1 = canvas.querySelector('h1'); 
-            
+            const h1 = document.querySelector('#visualCanvas h1'); 
             if (h1) {
-                const headerDiv = h1.parentElement.parentElement;
                 currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-                headerDiv.style.background = themes[currentThemeIndex];
+                h1.parentElement.parentElement.style.background = themes[currentThemeIndex];
+                pushState();
             }
         }
-
         function toggleFullscreen() {
-            const sheetContainer = document.getElementById('sheetContainer');
-            if (!document.fullscreenElement) {
-                if (sheetContainer.requestFullscreen) sheetContainer.requestFullscreen();
-                else if (sheetContainer.webkitRequestFullscreen) sheetContainer.webkitRequestFullscreen();
-                else if (sheetContainer.msRequestFullscreen) sheetContainer.msRequestFullscreen();
-            } else {
-                if (document.exitFullscreen) document.exitFullscreen();
-                else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-                else if (document.msExitFullscreen) document.msExitFullscreen();
-            }
+            const el = document.getElementById('sheetContainer');
+            if (!document.fullscreenElement) el.requestFullscreen ? el.requestFullscreen() : el.webkitRequestFullscreen();
+            else document.exitFullscreen ? document.exitFullscreen() : document.webkitExitFullscreen();
         }
     </script>
 </body>
