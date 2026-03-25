@@ -137,6 +137,162 @@
         .spell-search-item .spell-lvl { font-size: 0.75em; color: #94a3b8; background: #0f172a; padding: 2px 8px; border-radius: 4px; }
         .spell-search-item.loading { justify-content: center; color: #64748b; padding: 20px; }
         .spell-search-hint { padding: 8px 16px; font-size: 0.75em; color: #64748b; text-align: center; border-top: 1px solid #334155; }
+
+        /* ITEM SHOP - RETRO ZELDA GAME BOY STYLE */
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        .shop-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(8, 24, 8, 0.92); z-index: 998; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
+        .shop-overlay.open { display: flex; }
+        .shop-frame {
+            width: 780px; max-width: 95%; max-height: 90vh;
+            background: #0f380f;
+            border: 6px solid #306230;
+            border-radius: 4px;
+            box-shadow: 0 0 0 3px #0f380f, 0 0 0 6px #9bbc0f, 0 0 40px rgba(155, 188, 15, 0.15), inset 0 0 60px rgba(0,0,0,0.3);
+            display: flex; flex-direction: column;
+            font-family: 'Press Start 2P', monospace;
+            image-rendering: pixelated;
+            overflow: hidden;
+        }
+        .shop-header {
+            background: #306230;
+            padding: 12px 16px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 3px solid #9bbc0f;
+        }
+        .shop-header h3 { margin: 0; color: #9bbc0f; font-size: 16px; font-family: 'Press Start 2P', monospace; text-shadow: 2px 2px 0 #0f380f; letter-spacing: 1px; }
+        .shop-close { background: none; border: 2px solid #9bbc0f; color: #9bbc0f; font-family: 'Press Start 2P', monospace; font-size: 12px; cursor: pointer; padding: 4px 8px; transition: all 0.2s; }
+        .shop-close:hover { background: #9bbc0f; color: #0f380f; }
+        .shop-keeper {
+            padding: 10px 16px;
+            background: #1a4a1a;
+            border-bottom: 2px dashed #306230;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .shop-keeper-sprite {
+            font-size: 2em; line-height: 1;
+            animation: shopkeeper-bob 1.5s ease-in-out infinite;
+        }
+        @keyframes shopkeeper-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+        .shop-keeper-msg {
+            color: #d4e857; font-size: 12px; font-family: 'Press Start 2P', monospace;
+            line-height: 2;
+            border: 2px solid #306230; background: #0f380f; padding: 10px 14px; border-radius: 2px;
+            flex: 1;
+            text-shadow: 1px 1px 0 #0a2a0a;
+        }
+        .shop-tabs {
+            display: flex; overflow-x: auto;
+            background: #0f380f;
+            border-bottom: 2px solid #306230;
+            scrollbar-width: none;
+        }
+        .shop-tabs::-webkit-scrollbar { display: none; }
+        .shop-tab {
+            padding: 10px 14px; font-family: 'Press Start 2P', monospace; font-size: 10px;
+            color: #8bac0f; background: none; border: none; cursor: pointer;
+            white-space: nowrap; transition: all 0.15s;
+            border-right: 1px solid #1a4a1a;
+        }
+        .shop-tab:hover { color: #d4e857; background: #1a4a1a; }
+        .shop-tab.active { color: #0f380f; background: #9bbc0f; font-weight: bold; }
+        .shop-search {
+            padding: 8px 12px; background: #1a4a1a; border-bottom: 2px solid #306230;
+        }
+        .shop-search input {
+            width: 100%; background: #0f380f; color: #d4e857; border: 2px solid #306230;
+            padding: 12px 14px; font-family: 'Press Start 2P', monospace; font-size: 12px;
+            outline: none; box-sizing: border-box;
+        }
+        .shop-search input::placeholder { color: #4a7a2e; }
+        .shop-search input:focus { border-color: #9bbc0f; }
+        .shop-items {
+            flex: 1; overflow-y: auto; background: #0f380f;
+            min-height: 200px; max-height: 45vh;
+        }
+        .shop-items::-webkit-scrollbar { width: 8px; }
+        .shop-items::-webkit-scrollbar-track { background: #0f380f; }
+        .shop-items::-webkit-scrollbar-thumb { background: #306230; border: 1px solid #0f380f; }
+        .shop-item {
+            display: flex; align-items: center; padding: 10px 14px; gap: 12px;
+            border-bottom: 1px solid #1a4a1a; cursor: pointer; transition: all 0.1s;
+            color: #c8e040;
+        }
+        .shop-item:hover { background: #1a4a1a; color: #d4e857; }
+        .shop-item-icon { font-size: 1.5em; width: 32px; text-align: center; flex-shrink: 0; }
+        .shop-item-name { flex: 1; font-family: 'Press Start 2P', monospace; font-size: 11px; line-height: 1.8; }
+        .shop-item-cost { font-family: 'Press Start 2P', monospace; font-size: 11px; color: #d4e857; text-align: right; white-space: nowrap; text-shadow: 1px 1px 0 #0a2a0a; }
+        .shop-item-add {
+            background: none; border: 2px solid #8bac0f; color: #8bac0f;
+            font-family: 'Press Start 2P', monospace; font-size: 9px;
+            padding: 6px 10px; cursor: pointer; transition: all 0.15s; flex-shrink: 0;
+        }
+        .shop-item-add:hover { border-color: #d4e857; color: #d4e857; background: #1a4a1a; }
+        .shop-item.expanded { background: #1a4a1a; }
+        .shop-item-details {
+            padding: 10px 16px 14px 56px;
+            font-family: 'Press Start 2P', monospace; font-size: 10px;
+            color: #8bac0f; line-height: 2.2; background: #1a4a1a;
+            border-bottom: 2px solid #306230;
+            display: none;
+        }
+        .shop-item-details.open { display: block; }
+        .shop-item-details span { color: #d4e857; }
+        .shop-loading {
+            padding: 30px; text-align: center; font-family: 'Press Start 2P', monospace;
+            font-size: 13px; color: #8bac0f;
+            animation: blink-loading 1s steps(2) infinite;
+        }
+        @keyframes blink-loading { 0% { opacity: 1; } 50% { opacity: 0.3; } }
+        .shop-footer {
+            padding: 8px 16px; background: #306230; border-top: 3px solid #9bbc0f;
+            text-align: center; font-family: 'Press Start 2P', monospace;
+            font-size: 9px; color: #8bac0f; letter-spacing: 0.5px;
+        }
+        .shop-added-flash {
+            animation: added-flash 0.6s ease-out;
+        }
+        @keyframes added-flash {
+            0% { background: #9bbc0f; color: #0f380f; }
+            100% { background: transparent; }
+        }
+        /* ITEM DETAIL PANEL */
+        .shop-detail-panel {
+            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: #0f380f; flex-direction: column; z-index: 10;
+        }
+        .shop-detail-panel.open { display: flex; }
+        .shop-detail-header {
+            background: #306230; padding: 12px 16px;
+            display: flex; align-items: center; gap: 14px;
+            border-bottom: 3px solid #9bbc0f;
+        }
+        .shop-detail-back {
+            background: none; border: 2px solid #9bbc0f; color: #9bbc0f;
+            font-family: 'Press Start 2P', monospace; font-size: 10px;
+            padding: 6px 10px; cursor: pointer; transition: all 0.2s;
+        }
+        .shop-detail-back:hover { background: #9bbc0f; color: #0f380f; }
+        .shop-detail-title {
+            font-family: 'Press Start 2P', monospace; font-size: 13px;
+            color: #d4e857; text-shadow: 2px 2px 0 #0f380f;
+        }
+        .shop-detail-body {
+            flex: 1; overflow-y: auto; padding: 20px;
+            font-family: 'Press Start 2P', monospace; font-size: 10px;
+            color: #8bac0f; line-height: 2.4;
+        }
+        .shop-detail-body .detail-row {
+            padding: 8px 0; border-bottom: 1px dashed #1a4a1a;
+        }
+        .shop-detail-body .detail-label { color: #d4e857; }
+        .shop-detail-body .detail-section {
+            margin-top: 16px; padding-top: 12px; border-top: 2px solid #306230;
+        }
+        .shop-detail-body .detail-desc {
+            background: #1a4a1a; padding: 14px; border: 2px solid #306230;
+            border-radius: 4px; margin-top: 8px; line-height: 2.2;
+            color: #c8e040; font-size: 9px;
+        }
     </style>
 </head>
 <body>
@@ -177,6 +333,7 @@
                     <button class="symbol-btn" onmousedown="event.preventDefault(); changePortrait()" title="Change Portrait Image">🖼️</button>
                     <button class="symbol-btn" id="portraitLockBtn" onmousedown="event.preventDefault(); togglePortraitLock()" title="Portrait Locked — Click to Unlock" style="color: #ef4444;">🔒</button>
                     <button class="symbol-btn" onmousedown="event.preventDefault(); toggleQuickFill()" title="Quick Fill Character Data" style="color: #fbbf24;">📋</button>
+                    <button class="symbol-btn" onmousedown="event.preventDefault(); openItemShop()" title="Item Shop" style="color: #34d399;">🛒</button>
 
                     <button class="symbol-btn fullscreen-btn" onclick="toggleFullscreen()" title="Toggle Fullscreen">⛶</button>
                 </div>
@@ -309,6 +466,37 @@
                     <input type="text" id="spellSearchInput" placeholder="Search for a spell..." oninput="filterSpells(this.value)" />
                     <div class="spell-search-results" id="spellSearchResults"></div>
                     <div class="spell-search-hint">D&amp;D 5e SRD (2014) &bull; Press Esc to close</div>
+                </div>
+            </div>
+
+            <!-- ITEM SHOP OVERLAY -->
+            <div id="shopOverlay" class="shop-overlay" onclick="if(event.target===this)closeShop()">
+                <div class="shop-frame">
+                    <div class="shop-header">
+                        <h3>▸ ITEM SHOPPE ◂</h3>
+                        <button class="shop-close" onclick="closeShop()">✕ ESC</button>
+                    </div>
+                    <div class="shop-keeper">
+                        <div class="shop-keeper-sprite">🧙</div>
+                        <div class="shop-keeper-msg" id="shopKeeperMsg">Welcome, adventurer! Browse my wares... Everything ye need for the road ahead!</div>
+                    </div>
+                    <div class="shop-tabs" id="shopTabs"></div>
+                    <div class="shop-search">
+                        <input type="text" id="shopSearchInput" placeholder="SEARCH ITEMS..." oninput="filterShopItems(this.value)" />
+                    </div>
+                    <div class="shop-items" id="shopItems">
+                        <div class="shop-loading">LOADING WARES...</div>
+                    </div>
+                    <div class="shop-footer">D&amp;D 5e SRD &#x2022; Prices in GP &#x2022; Click item for details</div>
+
+                    <!-- ITEM DETAIL PANEL (slides over the list) -->
+                    <div class="shop-detail-panel" id="shopDetailPanel">
+                        <div class="shop-detail-header">
+                            <button class="shop-detail-back" onclick="closeItemDetail()">◀ BACK</button>
+                            <span class="shop-detail-title" id="shopDetailTitle">Item Name</span>
+                        </div>
+                        <div class="shop-detail-body" id="shopDetailBody"></div>
+                    </div>
                 </div>
             </div>
 
@@ -1335,12 +1523,316 @@
             pushState();
         }
 
-        // Esc key to close spell search
+        // Esc key to close spell search & shop
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && document.getElementById('spellSearchOverlay').classList.contains('open')) {
-                closeSpellSearch();
+            if (e.key === 'Escape') {
+                if (document.getElementById('shopOverlay').classList.contains('open')) { closeShop(); return; }
+                if (document.getElementById('spellSearchOverlay').classList.contains('open')) { closeSpellSearch(); }
             }
         });
+
+        // ==========================================
+        // ITEM SHOP (RETRO ZELDA STYLE)
+        // ==========================================
+        let shopEquipmentCache = null;
+        let shopCurrentCategory = 'all';
+        const shopKeeperMessages = [
+            "Welcome, adventurer! Browse my wares...",
+            "Finest goods this side of Neverwinter!",
+            "Ye won't find better prices anywhere!",
+            "Take yer time, I ain't goin' nowhere.",
+            "Need a new sword? A shield perhaps?",
+            "Every item guaranteed not-cursed!*",
+            "Buy somethin' will ya?",
+        ];
+        const shopCategoryIcons = {
+            'all': '📦', 'weapon': '⚔️', 'armor': '🛡️',
+            'adventuring-gear': '🎒', 'tools': '🔧',
+            'mounts-and-vehicles': '🐴', 'ammunition': '🏹',
+        };
+        const shopItemIcons = {
+            'Weapon': '⚔️', 'Armor': '🛡️', 'Shield': '🛡️',
+            'Adventuring Gear': '🎒', 'Tools': '🔧', 'Artisan': '🔨',
+            'Mount': '🐴', 'Vehicle': '🚢', 'Gaming': '🎲',
+            'Musical': '🎵', 'Potion': '🧪', 'Ammunition': '🏹',
+            'default': '📦'
+        };
+
+        function getItemIcon(item) {
+            const cat = item.equipment_category?.name || '';
+            const name = (item.name || '').toLowerCase();
+            if (name.includes('potion')) return '🧪';
+            if (name.includes('arrow') || name.includes('bolt') || name.includes('bullet')) return '🏹';
+            if (name.includes('horse') || name.includes('pony') || name.includes('mule') || name.includes('donkey')) return '🐴';
+            if (name.includes('ship') || name.includes('boat') || name.includes('galley')) return '🚢';
+            for (const [key, icon] of Object.entries(shopItemIcons)) {
+                if (cat.includes(key)) return icon;
+            }
+            return shopItemIcons.default;
+        }
+
+        function formatCost(item) {
+            if (!item.cost) return '- - -';
+            const price = item.cost.quantity || 0;
+            const unit = (item.cost.unit || 'gp').toUpperCase();
+            return price + ' ' + unit;
+        }
+
+        async function loadShopEquipment() {
+            if (shopEquipmentCache) return shopEquipmentCache;
+            try {
+                const resp = await fetch('https://www.dnd5eapi.co/api/equipment');
+                const data = await resp.json();
+                // Fetch all details in batches
+                const items = [];
+                const batchSize = 20;
+                for (let i = 0; i < data.results.length; i += batchSize) {
+                    const batch = data.results.slice(i, i + batchSize);
+                    const details = await Promise.all(
+                        batch.map(r => fetch('https://www.dnd5eapi.co' + r.url).then(r => r.json()).catch(() => null))
+                    );
+                    details.forEach(d => { if (d) items.push(d); });
+                    // Update progress
+                    const pct = Math.min(100, Math.round(((i + batchSize) / data.results.length) * 100));
+                    const el = document.getElementById('shopItems');
+                    if (el && el.querySelector('.shop-loading')) {
+                        el.querySelector('.shop-loading').textContent = 'LOADING WARES... ' + pct + '%';
+                    }
+                }
+                shopEquipmentCache = items;
+                return items;
+            } catch(e) {
+                console.error('Shop load failed:', e);
+                return null;
+            }
+        }
+
+        function openItemShop() {
+            const overlay = document.getElementById('shopOverlay');
+            overlay.classList.add('open');
+            const msgEl = document.getElementById('shopKeeperMsg');
+            msgEl.textContent = shopKeeperMessages[Math.floor(Math.random() * shopKeeperMessages.length)];
+            document.getElementById('shopSearchInput').value = '';
+
+            loadShopEquipment().then(items => {
+                if (!items) {
+                    document.getElementById('shopItems').innerHTML = '<div class="shop-loading">CONNECTION FAILED!<br>Check thy internet.</div>';
+                    return;
+                }
+                buildShopTabs(items);
+                renderShopItems(items);
+            });
+        }
+
+        function closeShop() {
+            document.getElementById('shopOverlay').classList.remove('open');
+        }
+
+        function buildShopTabs(items) {
+            const tabs = document.getElementById('shopTabs');
+            if (tabs.children.length > 0) return; // already built
+
+            const categories = new Map();
+            categories.set('all', items.length);
+            items.forEach(item => {
+                const cat = item.equipment_category?.name || 'Other';
+                categories.set(cat, (categories.get(cat) || 0) + 1);
+            });
+
+            categories.forEach((count, cat) => {
+                const btn = document.createElement('button');
+                btn.className = 'shop-tab' + (cat === 'all' ? ' active' : '');
+                const icon = shopCategoryIcons[cat.toLowerCase().replace(/\s+/g, '-')] || '📦';
+                btn.textContent = (cat === 'all' ? '📦 ALL' : icon + ' ' + cat.toUpperCase());
+                btn.onclick = () => {
+                    document.querySelectorAll('.shop-tab').forEach(t => t.classList.remove('active'));
+                    btn.classList.add('active');
+                    shopCurrentCategory = cat;
+                    document.getElementById('shopSearchInput').value = '';
+                    renderShopItems(shopEquipmentCache);
+                };
+                tabs.appendChild(btn);
+            });
+        }
+
+        function renderShopItems(items) {
+            const container = document.getElementById('shopItems');
+            const searchVal = (document.getElementById('shopSearchInput').value || '').toLowerCase();
+
+            let filtered = items;
+            if (shopCurrentCategory !== 'all') {
+                filtered = filtered.filter(i => (i.equipment_category?.name || '') === shopCurrentCategory);
+            }
+            if (searchVal) {
+                filtered = filtered.filter(i => i.name.toLowerCase().includes(searchVal));
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="shop-loading">NO WARES FOUND...</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+            filtered.forEach(item => {
+                const row = document.createElement('div');
+                const detailId = 'shop-detail-' + item.index;
+
+                row.className = 'shop-item';
+                row.innerHTML = `
+                    <span class="shop-item-icon">${getItemIcon(item)}</span>
+                    <span class="shop-item-name">${item.name}${item.quantity && item.quantity !== item.cost?.quantity ? ' <span style="color:#d4e857;">(x' + item.quantity + ')</span>' : ''}</span>
+                    <span class="shop-item-cost">${formatCost(item)}</span>
+                    <button class="shop-item-add" onclick="event.stopPropagation(); showItemDetail('${item.index}');" title="View full details">INFO</button>
+                    <button class="shop-item-add" onclick="event.stopPropagation(); addItemToSheet('${item.name.replace(/'/g, "\\'")}', '${formatCost(item)}', '${(item.weight || '-')}'); this.textContent='ADDED!'; this.style.borderColor='#9bbc0f'; this.style.color='#9bbc0f'; this.closest('.shop-item').classList.add('shop-added-flash');" title="Add to equipment">+ADD</button>
+                `;
+                row.onclick = () => {
+                    const existing = document.getElementById(detailId);
+                    if (existing) {
+                        existing.classList.toggle('open');
+                        row.classList.toggle('expanded');
+                        return;
+                    }
+                    // Build detail
+                    const detail = document.createElement('div');
+                    detail.id = detailId;
+                    detail.className = 'shop-item-details open';
+                    row.classList.add('expanded');
+
+                    let info = '';
+                    if (item.category_range) info += '<span>Type:</span> ' + item.category_range + '<br>';
+                    if (item.weapon_range) info += '<span>Range:</span> ' + item.weapon_range + (item.range ? ' (' + item.range.normal + (item.range.long ? '/' + item.range.long : '') + ' ft)' : '') + '<br>';
+                    if (item.damage) info += '<span>Damage:</span> ' + item.damage.damage_dice + ' ' + (item.damage.damage_type?.name || '') + '<br>';
+                    if (item.two_handed_damage) info += '<span>2-Hand:</span> ' + item.two_handed_damage.damage_dice + ' ' + (item.two_handed_damage.damage_type?.name || '') + '<br>';
+                    if (item.armor_class) info += '<span>AC:</span> ' + (item.armor_class.base || '') + (item.armor_class.dex_bonus ? ' + DEX' : '') + (item.armor_class.max_bonus ? ' (max ' + item.armor_class.max_bonus + ')' : '') + '<br>';
+                    if (item.str_minimum) info += '<span>STR req:</span> ' + item.str_minimum + '<br>';
+                    if (item.stealth_disadvantage) info += '<span>Stealth:</span> Disadvantage<br>';
+                    if (item.properties && item.properties.length > 0) info += '<span>Props:</span> ' + item.properties.map(p => p.name).join(', ') + '<br>';
+                    if (item.weight) info += '<span>Weight:</span> ' + item.weight + ' lb<br>';
+                    if (item.desc && item.desc.length > 0) info += '<br><span>Info:</span> ' + item.desc[0] + '<br>';
+                    if (!info) info = '<span>A fine item indeed!</span>';
+                    detail.innerHTML = info;
+                    row.after(detail);
+                };
+                container.appendChild(row);
+            });
+        }
+
+        function filterShopItems(val) {
+            if (shopEquipmentCache) renderShopItems(shopEquipmentCache);
+        }
+
+        function showItemDetail(index) {
+            if (!shopEquipmentCache) return;
+            const item = shopEquipmentCache.find(i => i.index === index);
+            if (!item) return;
+
+            document.getElementById('shopDetailTitle').textContent = item.name;
+            const body = document.getElementById('shopDetailBody');
+
+            let html = '<div class="detail-row"><span class="detail-label">Category:</span> ' + (item.equipment_category?.name || 'Unknown') + '</div>';
+            if (item.gear_category) html += '<div class="detail-row"><span class="detail-label">Sub-type:</span> ' + item.gear_category.name + '</div>';
+            html += '<div class="detail-row"><span class="detail-label">Cost:</span> ' + formatCost(item) + '</div>';
+            if (item.quantity && item.quantity !== item.cost?.quantity) {
+                html += '<div class="detail-row"><span class="detail-label">Quantity:</span> ' + item.quantity + ' per purchase</div>';
+            }
+            if (item.weight) html += '<div class="detail-row"><span class="detail-label">Weight:</span> ' + item.weight + ' lb</div>';
+
+            // Weapon stats
+            if (item.category_range) html += '<div class="detail-row"><span class="detail-label">Type:</span> ' + item.category_range + '</div>';
+            if (item.weapon_range) {
+                let rangeStr = item.weapon_range;
+                if (item.range) rangeStr += ' (' + item.range.normal + (item.range.long ? '/' + item.range.long : '') + ' ft)';
+                html += '<div class="detail-row"><span class="detail-label">Range:</span> ' + rangeStr + '</div>';
+            }
+            if (item.damage) html += '<div class="detail-row"><span class="detail-label">Damage:</span> ' + item.damage.damage_dice + ' ' + (item.damage.damage_type?.name || '') + '</div>';
+            if (item.two_handed_damage) html += '<div class="detail-row"><span class="detail-label">Two-Handed:</span> ' + item.two_handed_damage.damage_dice + ' ' + (item.two_handed_damage.damage_type?.name || '') + '</div>';
+
+            // Armor stats
+            if (item.armor_class) {
+                let acStr = '' + (item.armor_class.base || '');
+                if (item.armor_class.dex_bonus) acStr += ' + DEX' + (item.armor_class.max_bonus ? ' (max ' + item.armor_class.max_bonus + ')' : '');
+                html += '<div class="detail-row"><span class="detail-label">Armor Class:</span> ' + acStr + '</div>';
+            }
+            if (item.armor_category) html += '<div class="detail-row"><span class="detail-label">Armor Type:</span> ' + item.armor_category + '</div>';
+            if (item.str_minimum) html += '<div class="detail-row"><span class="detail-label">STR Required:</span> ' + item.str_minimum + '</div>';
+            if (item.stealth_disadvantage) html += '<div class="detail-row"><span class="detail-label">Stealth:</span> Disadvantage</div>';
+
+            // Properties
+            if (item.properties && item.properties.length > 0) {
+                html += '<div class="detail-row"><span class="detail-label">Properties:</span> ' + item.properties.map(p => p.name).join(', ') + '</div>';
+            }
+
+            // Special / contents
+            if (item.contents && item.contents.length > 0) {
+                html += '<div class="detail-section"><span class="detail-label">Pack Contents:</span><br>';
+                item.contents.forEach(c => {
+                    html += '&nbsp;&nbsp;• ' + (c.item?.name || 'item') + ' x' + (c.quantity || 1) + '<br>';
+                });
+                html += '</div>';
+            }
+
+            // Description
+            if (item.desc && item.desc.length > 0) {
+                html += '<div class="detail-section"><span class="detail-label">Description:</span>';
+                html += '<div class="detail-desc">' + item.desc.join('<br><br>') + '</div>';
+                html += '</div>';
+            }
+
+            // Special properties details
+            if (item.special && item.special.length > 0) {
+                html += '<div class="detail-section"><span class="detail-label">Special:</span>';
+                html += '<div class="detail-desc">' + item.special.join('<br><br>') + '</div>';
+                html += '</div>';
+            }
+
+            body.innerHTML = html;
+            document.getElementById('shopDetailPanel').classList.add('open');
+        }
+
+        function closeItemDetail() {
+            document.getElementById('shopDetailPanel').classList.remove('open');
+        }
+
+        function addItemToSheet(name, cost, weight) {
+            const canvas = document.getElementById('visualCanvas');
+            if (!canvas) return;
+            // Find the equipment/items section — look for common patterns
+            // Try to find an equipment list or create a note
+            const allText = canvas.querySelectorAll('td, div, li, span');
+            let equipmentCell = null;
+            allText.forEach(el => {
+                const t = el.textContent.trim().toLowerCase();
+                if (t === 'equipment' || t === 'equipment & gear' || t === 'other equipment' || t === 'items') {
+                    // Get the next editable container
+                    let sib = el.nextElementSibling || el.parentElement?.nextElementSibling;
+                    if (sib && sib.getAttribute('contenteditable') !== 'false') equipmentCell = sib;
+                }
+            });
+            // Fallback: Find by ID patterns
+            if (!equipmentCell) {
+                equipmentCell = canvas.querySelector('#equipment-list, #equipment, [data-field="equipment"]');
+            }
+            // Fallback: try to find an editable div that looks like an equipment area
+            if (!equipmentCell) {
+                const editables = canvas.querySelectorAll('div[contenteditable="true"], td[contenteditable="true"]');
+                // Use the largest editable area in the lower half
+                editables.forEach(el => {
+                    if (el.textContent.toLowerCase().includes('rope') || el.textContent.toLowerCase().includes('ration') || el.textContent.toLowerCase().includes('torch') || el.textContent.toLowerCase().includes('backpack')) {
+                        equipmentCell = el;
+                    }
+                });
+            }
+
+            if (equipmentCell) {
+                const line = document.createElement('div');
+                line.textContent = name + ' (' + cost + ', ' + weight + ' lb)';
+                equipmentCell.appendChild(line);
+            } else {
+                // Last resort: show as alert
+                showAppModal('alert', 'Item Added', 'Add to your equipment list:\\n\\n' + name + ' — ' + cost + ', ' + weight + ' lb');
+            }
+            pushState();
+        }
 
         // ==========================================
         // QUICK FILL SIDEBAR
