@@ -35,6 +35,24 @@
         .fullscreen-btn { margin-left: auto; background: #3b82f6; color: #fff; border-color: #2563eb; }
         .fullscreen-btn:hover { background: #2563eb; }
         .divider { border-left: 2px solid #334155; margin: 0 5px; height: 24px; }
+
+        /* TEXT FORMATTING TOOLBAR */
+        .fmt-btn { background: #1e293b; border: 1px solid #475569; color: #f8fafc; border-radius: 6px; padding: 6px 10px; font-size: 1em; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.2); min-width: 32px; text-align: center; }
+        .fmt-btn:hover { background: #334155; border-color: #64748b; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.4); }
+        .fmt-btn:active { transform: translateY(1px); box-shadow: none; }
+        .fmt-btn.active { background: #475569; border-color: #10b981; box-shadow: 0 0 6px rgba(16, 185, 129, 0.4); }
+        .fmt-select { background: #1e293b; border: 1px solid #475569; color: #f8fafc; border-radius: 6px; padding: 6px 8px; font-size: 0.85em; cursor: pointer; transition: all 0.2s ease; }
+        .fmt-select:hover { border-color: #64748b; }
+        .fmt-select option { background: #1e293b; color: #f8fafc; }
+        /* PORTRAIT INTERACTION */
+        .portrait-interactive { cursor: grab !important; pointer-events: auto !important; outline: 2px dashed transparent; transition: outline 0.2s; }
+        .portrait-interactive:hover { outline: 2px dashed rgba(16, 185, 129, 0.6); }
+        .portrait-interactive:active { cursor: grabbing !important; }
+        .portrait-hint { position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); color: #fff; font-size: 0.7em; padding: 3px 8px; border-radius: 4px; white-space: nowrap; opacity: 0; transition: opacity 0.2s; pointer-events: none; z-index: 100; }
+        .portrait-interactive:hover + .portrait-hint, .portrait-interactive:hover ~ .portrait-hint { opacity: 1; }
+
+        .fmt-color-wrapper { position: relative; display: inline-flex; align-items: center; }
+        .fmt-color-input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; top: 0; left: 0; }
         
         #visualCanvas { padding: 20px; min-height: 400px; outline: none; overflow-y: auto; max-height: 700px; background-color: #0f172a; }
         #sheetContainer:fullscreen #visualCanvas { max-height: none; }
@@ -116,9 +134,59 @@
                     <button class="symbol-btn" onmousedown="event.preventDefault(); saveLocal()" title="Save Character to Browser" style="color: #34d399;">💾</button>
                     <button class="symbol-btn" onmousedown="event.preventDefault(); showLoadMenu()" title="Load Character from Browser" style="color: #60a5fa;">📂</button>
                     <button class="symbol-btn" onmousedown="event.preventDefault(); changePortrait()" title="Change Portrait Image">🖼️</button>
-                    <button class="symbol-btn" onmousedown="event.preventDefault(); changeTheme()" title="Change Theme Color">🎨</button>
+                    <button class="symbol-btn" id="portraitLockBtn" onmousedown="event.preventDefault(); togglePortraitLock()" title="Portrait Locked — Click to Unlock" style="color: #ef4444;">🔒</button>
 
                     <button class="symbol-btn fullscreen-btn" onclick="toggleFullscreen()" title="Toggle Fullscreen">⛶</button>
+                </div>
+                <div class="toolbar-row">
+                    <span class="toolbar-label">Format:</span>
+                    <button class="fmt-btn" onmousedown="event.preventDefault(); execFmt('bold')" title="Bold (Ctrl+B)"><b>B</b></button>
+                    <button class="fmt-btn" onmousedown="event.preventDefault(); execFmt('italic')" title="Italic (Ctrl+I)"><i>I</i></button>
+                    <button class="fmt-btn" onmousedown="event.preventDefault(); execFmt('underline')" title="Underline (Ctrl+U)"><u>U</u></button>
+                    <button class="fmt-btn" onmousedown="event.preventDefault(); execFmt('strikeThrough')" title="Strikethrough"><s>S</s></button>
+
+                    <span class="divider"></span>
+
+                    <select class="fmt-select" onchange="execFontSize(this.value); this.value='';" title="Font Size">
+                        <option value="" disabled selected>Size</option>
+                        <option value="1">8pt</option>
+                        <option value="2">10pt</option>
+                        <option value="3">12pt</option>
+                        <option value="4">14pt</option>
+                        <option value="5">18pt</option>
+                        <option value="6">24pt</option>
+                        <option value="7">36pt</option>
+                    </select>
+
+                    <select class="fmt-select" onchange="execFontName(this.value); this.value='';" title="Font Family">
+                        <option value="" disabled selected>Font</option>
+                        <option value="Lora">Lora</option>
+                        <option value="Cinzel">Cinzel</option>
+                        <option value="Segoe UI">Segoe UI</option>
+                        <option value="Arial">Arial</option>
+                        <option value="Georgia">Georgia</option>
+                        <option value="Times New Roman">Times New Roman</option>
+                        <option value="Courier New">Courier New</option>
+                        <option value="Verdana">Verdana</option>
+                    </select>
+
+                    <span class="divider"></span>
+
+                    <label class="fmt-btn" title="Text Color" style="cursor:pointer; position:relative;">
+                        A <input type="color" id="fmtColorPicker" value="#ffffff" onmousedown="saveSelection()" style="position:absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer;" />
+                    </label>
+
+                    <span class="divider"></span>
+
+                    <button class="fmt-btn" onmousedown="event.preventDefault(); execFmt('justifyLeft')" title="Align Left">&#8676;</button>
+                    <button class="fmt-btn" onmousedown="event.preventDefault(); execFmt('justifyCenter')" title="Align Center">&#8633;</button>
+                    <button class="fmt-btn" onmousedown="event.preventDefault(); execFmt('justifyRight')" title="Align Right">&#8677;</button>
+
+                    <span class="divider"></span>
+
+                    <button class="fmt-btn" onmousedown="event.preventDefault(); execFmt('insertUnorderedList')" title="Bullet List">&#8226; List</button>
+                    <button class="fmt-btn" onmousedown="event.preventDefault(); execFmt('insertOrderedList')" title="Numbered List">1. List</button>
+                    <button class="fmt-btn" onmousedown="event.preventDefault(); execFmt('removeFormat')" title="Clear Formatting" style="color:#ef4444;">&#10005;</button>
                 </div>
             </div>
             
@@ -291,11 +359,12 @@
             
             const clone = document.getElementById('visualCanvas').cloneNode(true);
             clone.querySelectorAll('.editor-injected-ui').forEach(el => el.remove());
+            clone.querySelectorAll('.portrait-interactive').forEach(el => el.classList.remove('portrait-interactive'));
             clone.querySelectorAll('.click-sym').forEach(el => {
                 const textNode = document.createTextNode(el.innerText);
                 el.parentNode.replaceChild(textNode, el);
             });
-            
+
             let saves = JSON.parse(localStorage.getItem('dnd_saves') || '{}');
             saves[name] = clone.innerHTML;
             localStorage.setItem('dnd_saves', JSON.stringify(saves));
@@ -451,6 +520,7 @@
             updateBars();
             const clone = document.getElementById('visualCanvas').cloneNode(true);
             clone.querySelectorAll('.editor-injected-ui').forEach(el => el.remove());
+            clone.querySelectorAll('.portrait-interactive').forEach(el => el.classList.remove('portrait-interactive'));
             clone.querySelectorAll('.click-sym').forEach(el => {
                 const textNode = document.createTextNode(el.innerText);
                 el.parentNode.replaceChild(textNode, el);
@@ -650,6 +720,103 @@
                     }
                 });
             }
+
+            // 5. INJECT PORTRAIT DRAG & SCALE
+            const images = canvas.querySelectorAll('img');
+            images.forEach(img => {
+                img.setAttribute('draggable', 'false');
+                const container = img.parentElement;
+
+                // Parse current transform or init defaults
+                let imgScale = parseFloat(img.dataset.portraitScale) || 1;
+                let imgX = parseFloat(img.dataset.portraitX) || 0;
+                let imgY = parseFloat(img.dataset.portraitY) || 0;
+                applyPortraitTransform(img, imgX, imgY, imgScale);
+
+                if (portraitLocked) {
+                    img.classList.remove('portrait-interactive');
+                    img.onmousedown = null;
+                    img.onwheel = null;
+                    if (container) container.style.pointerEvents = 'none';
+                    return;
+                }
+
+                img.classList.add('portrait-interactive');
+                if (container) container.style.pointerEvents = 'auto';
+
+                // Add hint label
+                const existingHint = container ? container.querySelector('.portrait-hint') : null;
+                if (!existingHint && container) {
+                    const hint = document.createElement('span');
+                    hint.className = 'portrait-hint editor-injected-ui';
+                    hint.textContent = 'Drag to move \u2022 Scroll to scale';
+                    container.style.position = container.style.position || 'relative';
+                    container.appendChild(hint);
+                }
+
+                // Drag
+                img.onmousedown = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const startX = e.clientX, startY = e.clientY;
+                    const origX = parseFloat(img.dataset.portraitX) || 0;
+                    const origY = parseFloat(img.dataset.portraitY) || 0;
+
+                    function onMove(ev) {
+                        const dx = ev.clientX - startX;
+                        const dy = ev.clientY - startY;
+                        img.dataset.portraitX = origX + dx;
+                        img.dataset.portraitY = origY + dy;
+                        applyPortraitTransform(img, origX + dx, origY + dy, parseFloat(img.dataset.portraitScale) || 1);
+                    }
+                    function onUp() {
+                        document.removeEventListener('mousemove', onMove);
+                        document.removeEventListener('mouseup', onUp);
+                        pushState();
+                    }
+                    document.addEventListener('mousemove', onMove);
+                    document.addEventListener('mouseup', onUp);
+                };
+
+                // Scroll to scale
+                img.onwheel = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    let scale = parseFloat(img.dataset.portraitScale) || 1;
+                    scale += e.deltaY < 0 ? 0.05 : -0.05;
+                    scale = Math.max(0.2, Math.min(5, scale));
+                    img.dataset.portraitScale = scale;
+                    applyPortraitTransform(img, parseFloat(img.dataset.portraitX) || 0, parseFloat(img.dataset.portraitY) || 0, scale);
+                    clearTimeout(img._wheelDebounce);
+                    img._wheelDebounce = setTimeout(() => pushState(), 500);
+                };
+            });
+        }
+
+        let portraitLocked = true;
+
+        function togglePortraitLock() {
+            portraitLocked = !portraitLocked;
+            const btn = document.getElementById('portraitLockBtn');
+            if (portraitLocked) {
+                btn.innerHTML = '🔒';
+                btn.style.color = '#ef4444';
+                btn.title = 'Portrait Locked — Click to Unlock';
+            } else {
+                btn.innerHTML = '🔓';
+                btn.style.color = '#34d399';
+                btn.title = 'Portrait Unlocked — Click to Lock';
+            }
+            // Re-inject to apply/remove drag handlers
+            injectInlineControls();
+        }
+
+        function applyPortraitTransform(img, x, y, scale) {
+            img.dataset.portraitX = x;
+            img.dataset.portraitY = y;
+            img.dataset.portraitScale = scale;
+            img.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+            img.style.transformOrigin = 'center center';
         }
 
         // ==========================================
@@ -797,33 +964,97 @@
         }
 
         async function changePortrait() {
-            const img = document.querySelector('#visualCanvas img'); 
+            let img = document.querySelector('#visualCanvas img');
+            const currentUrl = img ? img.src : '';
+            const newUrl = await showAppModal('prompt', 'Change Portrait', 'Paste direct image URL:', currentUrl);
+            if (!newUrl) return;
+
             if (img) {
-                const newUrl = await showAppModal('prompt', 'Change Portrait', 'Paste direct image URL:', img.src);
-                if (newUrl) {
-                    img.src = newUrl.trim();
-                    pushState();
-                }
+                img.src = newUrl.trim();
+                // Reset position/scale for new image
+                img.dataset.portraitX = 0;
+                img.dataset.portraitY = 0;
+                img.dataset.portraitScale = 1;
+                applyPortraitTransform(img, 0, 0, 1);
             } else {
-                showAppModal('alert', 'Error', 'Could not find an image tag on this sheet!');
+                // No image yet — create one in the canvas
+                const wrapper = document.createElement('div');
+                wrapper.style.cssText = 'position: relative; width: 100%; height: 300px; overflow: hidden; border-radius: 8px; margin: 10px 0;';
+                const newImg = document.createElement('img');
+                newImg.src = newUrl.trim();
+                newImg.style.cssText = 'width: 100%; height: 100%; object-fit: cover;';
+                wrapper.appendChild(newImg);
+                document.getElementById('visualCanvas').prepend(wrapper);
+                injectInlineControls();
             }
+            pushState();
         }
 
-        const themes = ["linear-gradient(135deg, #1e3f20, #0a1c0b)", "linear-gradient(135deg, #8b0000, #3d0000)", "linear-gradient(135deg, #2c3e50, #000000)", "linear-gradient(135deg, #4b0082, #191970)", "linear-gradient(135deg, #b8860b, #556b2f)"];
-        let currentThemeIndex = 0;
-        function changeTheme() {
-            const h1 = document.querySelector('#visualCanvas h1'); 
-            if (h1) {
-                currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-                h1.parentElement.parentElement.style.background = themes[currentThemeIndex];
-                pushState();
-            }
-        }
         function toggleFullscreen() {
             const el = document.getElementById('sheetContainer');
             if (!document.fullscreenElement) el.requestFullscreen ? el.requestFullscreen() : el.webkitRequestFullscreen();
             else document.exitFullscreen ? document.exitFullscreen() : document.webkitExitFullscreen();
         }
+
+        // ==========================================
+        // TEXT FORMATTING FUNCTIONS
+        // ==========================================
+        function execFmt(command) {
+            document.getElementById('visualCanvas').focus();
+            document.execCommand(command, false, null);
+            pushState();
+        }
+
+        function execFontSize(size) {
+            document.getElementById('visualCanvas').focus();
+            document.execCommand('fontSize', false, size);
+            pushState();
+        }
+
+        function execFontName(font) {
+            document.getElementById('visualCanvas').focus();
+            document.execCommand('fontName', false, font);
+            pushState();
+        }
+
+
+        let savedRange = null;
+
+        function saveSelection() {
+            const sel = window.getSelection();
+            if (sel.rangeCount > 0) {
+                savedRange = sel.getRangeAt(0).cloneRange();
+            }
+        }
+
+        (function() {
+            const picker = document.getElementById('fmtColorPicker');
+
+            picker.addEventListener('input', () => {
+                if (savedRange) {
+                    const sel = window.getSelection();
+                    sel.removeAllRanges();
+                    sel.addRange(savedRange.cloneRange());
+                }
+                document.execCommand('foreColor', false, picker.value);
+                // Re-save since DOM changed
+                const sel = window.getSelection();
+                if (sel.rangeCount > 0) {
+                    savedRange = sel.getRangeAt(0).cloneRange();
+                }
+            });
+
+            picker.addEventListener('change', () => {
+                if (savedRange) {
+                    const sel = window.getSelection();
+                    sel.removeAllRanges();
+                    sel.addRange(savedRange.cloneRange());
+                }
+                document.execCommand('foreColor', false, picker.value);
+                pushState();
+                savedRange = null;
+            });
+        })();
     </script>
 </body>
 </html>
