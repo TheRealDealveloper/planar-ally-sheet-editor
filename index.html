@@ -96,6 +96,47 @@
         .save-load-btn:hover { background: #2563eb; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(59, 130, 246, 0.4); }
         .save-del-btn { background: #ef4444; color: #fff; }
         .save-del-btn:hover { background: #dc2626; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(239, 68, 68, 0.4); }
+
+        /* QUICK FILL SIDEBAR */
+        .qf-sidebar { position: absolute; top: 0; right: 0; width: 340px; height: 100%; background: rgba(15, 23, 42, 0.97); backdrop-filter: blur(12px); border-left: 1px solid #334155; z-index: 50; display: none; flex-direction: column; overflow: hidden; }
+        .qf-sidebar.open { display: flex; }
+        .qf-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid #334155; flex-shrink: 0; }
+        .qf-header h3 { margin: 0; color: #fbbf24; font-size: 1.1em; font-family: 'Segoe UI', sans-serif; }
+        .qf-close { background: none; border: none; color: #94a3b8; font-size: 1.4em; cursor: pointer; padding: 4px 8px; border-radius: 4px; }
+        .qf-close:hover { color: #ef4444; background: rgba(239,68,68,0.1); }
+        .qf-body { overflow-y: auto; padding: 12px 16px; flex: 1; }
+        .qf-section { margin-bottom: 16px; }
+        .qf-section-title { font-size: 0.75em; text-transform: uppercase; letter-spacing: 1.5px; color: #fbbf24; margin-bottom: 8px; font-weight: bold; border-bottom: 1px solid #334155; padding-bottom: 4px; }
+        .qf-row { display: flex; gap: 8px; margin-bottom: 6px; align-items: center; }
+        .qf-row label { font-size: 0.8em; color: #94a3b8; min-width: 55px; flex-shrink: 0; }
+        .qf-row input, .qf-row select { flex: 1; background: #0f172a; color: #f8fafc; border: 1px solid #475569; border-radius: 4px; padding: 5px 8px; font-size: 0.85em; min-width: 0; }
+        .qf-row input:focus { border-color: #fbbf24; outline: none; }
+        .qf-stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+        .qf-stat-cell { display: flex; flex-direction: column; align-items: center; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 6px 4px; }
+        .qf-stat-cell label { font-size: 0.7em; color: #fbbf24; font-weight: bold; min-width: unset; }
+        .qf-stat-cell input { width: 100%; text-align: center; padding: 4px; font-size: 1em; font-weight: bold; }
+        .qf-stat-cell .qf-mod { font-size: 0.75em; color: #34d399; margin-top: 2px; }
+        .qf-portrait-row { display: flex; gap: 8px; align-items: center; }
+        .qf-portrait-row input { flex: 1; }
+        .qf-portrait-row button { background: #3b82f6; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8em; white-space: nowrap; }
+        .qf-portrait-row button:hover { background: #2563eb; }
+        .qf-saves-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+        .qf-save-row { display: flex; align-items: center; gap: 4px; font-size: 0.8em; padding: 3px 6px; border-radius: 4px; background: #1e293b; }
+        .qf-save-row input[type="checkbox"] { accent-color: #34d399; }
+        .qf-save-row label { min-width: unset; color: #cbd5e1; }
+
+        /* SPELL SEARCH */
+        .spell-search-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.85); z-index: 999; align-items: flex-start; justify-content: center; padding-top: 80px; backdrop-filter: blur(4px); }
+        .spell-search-overlay.open { display: flex; }
+        .spell-search-box { background: #1e293b; border: 1px solid #475569; border-radius: 12px; width: 450px; max-width: 90%; box-shadow: 0 20px 40px rgba(0,0,0,0.8); overflow: hidden; display: flex; flex-direction: column; max-height: 70vh; }
+        .spell-search-box input { background: #0f172a; color: #f8fafc; border: none; padding: 14px 16px; font-size: 1.1em; outline: none; border-bottom: 1px solid #334155; }
+        .spell-search-box input::placeholder { color: #64748b; }
+        .spell-search-results { overflow-y: auto; max-height: 50vh; }
+        .spell-search-item { padding: 10px 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b; color: #cbd5e1; font-size: 0.9em; transition: background 0.1s; }
+        .spell-search-item:hover { background: #334155; color: #fff; }
+        .spell-search-item .spell-lvl { font-size: 0.75em; color: #94a3b8; background: #0f172a; padding: 2px 8px; border-radius: 4px; }
+        .spell-search-item.loading { justify-content: center; color: #64748b; padding: 20px; }
+        .spell-search-hint { padding: 8px 16px; font-size: 0.75em; color: #64748b; text-align: center; border-top: 1px solid #334155; }
     </style>
 </head>
 <body>
@@ -135,6 +176,7 @@
                     <button class="symbol-btn" onmousedown="event.preventDefault(); showLoadMenu()" title="Load Character from Browser" style="color: #60a5fa;">📂</button>
                     <button class="symbol-btn" onmousedown="event.preventDefault(); changePortrait()" title="Change Portrait Image">🖼️</button>
                     <button class="symbol-btn" id="portraitLockBtn" onmousedown="event.preventDefault(); togglePortraitLock()" title="Portrait Locked — Click to Unlock" style="color: #ef4444;">🔒</button>
+                    <button class="symbol-btn" onmousedown="event.preventDefault(); toggleQuickFill()" title="Quick Fill Character Data" style="color: #fbbf24;">📋</button>
 
                     <button class="symbol-btn fullscreen-btn" onclick="toggleFullscreen()" title="Toggle Fullscreen">⛶</button>
                 </div>
@@ -190,8 +232,84 @@
                 </div>
             </div>
             
+            <!-- QUICK FILL SIDEBAR -->
+            <div id="qfSidebar" class="qf-sidebar">
+                <div class="qf-header">
+                    <h3>Quick Fill</h3>
+                    <button class="qf-close" onclick="toggleQuickFill()">&times;</button>
+                </div>
+                <div class="qf-body">
+                    <div class="qf-section">
+                        <div class="qf-section-title">Basic Info</div>
+                        <div class="qf-row"><label>Name</label><input type="text" data-qf="char-name" /></div>
+                        <div class="qf-row"><label>Class/Lvl</label><input type="text" data-qf="char-class-level" /></div>
+                        <div class="qf-row"><label>Race</label><input type="text" data-qf="char-race" /></div>
+                        <div class="qf-row"><label>Background</label><input type="text" data-qf="char-background" /></div>
+                        <div class="qf-row"><label>Alignment</label><input type="text" data-qf="char-alignment" /></div>
+                    </div>
+                    <div class="qf-section">
+                        <div class="qf-section-title">Physical</div>
+                        <div class="qf-row"><label>Age</label><input type="text" data-qf="char-age" /></div>
+                        <div class="qf-row"><label>Height</label><input type="text" data-qf="char-height" /></div>
+                        <div class="qf-row"><label>Weight</label><input type="text" data-qf="char-weight" /></div>
+                    </div>
+                    <div class="qf-section">
+                        <div class="qf-section-title">Portrait</div>
+                        <div class="qf-portrait-row">
+                            <input type="text" id="qfPortraitUrl" placeholder="Image URL..." />
+                            <button onclick="applyPortraitUrl()">Set</button>
+                        </div>
+                    </div>
+                    <div class="qf-section">
+                        <div class="qf-section-title">Ability Scores</div>
+                        <div class="qf-stats-grid">
+                            <div class="qf-stat-cell"><label>STR</label><input type="number" data-qf-stat="str" /><span class="qf-mod" id="qf-mod-str">+0</span></div>
+                            <div class="qf-stat-cell"><label>DEX</label><input type="number" data-qf-stat="dex" /><span class="qf-mod" id="qf-mod-dex">+0</span></div>
+                            <div class="qf-stat-cell"><label>CON</label><input type="number" data-qf-stat="con" /><span class="qf-mod" id="qf-mod-con">+0</span></div>
+                            <div class="qf-stat-cell"><label>INT</label><input type="number" data-qf-stat="int" /><span class="qf-mod" id="qf-mod-int">+0</span></div>
+                            <div class="qf-stat-cell"><label>WIS</label><input type="number" data-qf-stat="wis" /><span class="qf-mod" id="qf-mod-wis">+0</span></div>
+                            <div class="qf-stat-cell"><label>CHA</label><input type="number" data-qf-stat="cha" /><span class="qf-mod" id="qf-mod-cha">+0</span></div>
+                        </div>
+                    </div>
+                    <div class="qf-section">
+                        <div class="qf-section-title">Combat</div>
+                        <div class="qf-row"><label>AC</label><input type="number" data-qf="stat-ac" /></div>
+                        <div class="qf-row"><label>Initiative</label><input type="text" data-qf="stat-init" /></div>
+                        <div class="qf-row"><label>Speed</label><input type="text" data-qf="stat-speed" data-qf-speed="true" /></div>
+                        <div class="qf-row"><label>Prof</label><input type="text" data-qf="prof-bonus" /></div>
+                        <div class="qf-row"><label>HP</label><input type="number" data-qf="hp-current-val" style="width:60px;flex:none;" /> <span style="color:#94a3b8">/</span> <input type="number" data-qf="hp-max-val" style="width:60px;flex:none;" /></div>
+                    </div>
+                    <div class="qf-section">
+                        <div class="qf-section-title">Experience</div>
+                        <div class="qf-row"><label>Current</label><input type="number" data-qf="exp-current" /></div>
+                        <div class="qf-row"><label>Next Level</label><input type="number" data-qf="exp-max" /></div>
+                    </div>
+                    <div class="qf-section">
+                        <div class="qf-section-title">Coins</div>
+                        <div class="qf-row">
+                            <label>CP</label><input type="number" data-qf="coin-cp" style="width:50px;flex:none;" />
+                            <label>SP</label><input type="number" data-qf="coin-sp" style="width:50px;flex:none;" />
+                            <label>EP</label><input type="number" data-qf="coin-ep" style="width:50px;flex:none;" />
+                        </div>
+                        <div class="qf-row">
+                            <label>GP</label><input type="number" data-qf="coin-gp" style="width:50px;flex:none;" />
+                            <label>PP</label><input type="number" data-qf="coin-pp" style="width:50px;flex:none;" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div id="visualCanvas" contenteditable="true" spellcheck="false">
  
+            </div>
+
+            <!-- SPELL SEARCH OVERLAY -->
+            <div id="spellSearchOverlay" class="spell-search-overlay" onclick="if(event.target===this)closeSpellSearch()">
+                <div class="spell-search-box">
+                    <input type="text" id="spellSearchInput" placeholder="Search for a spell..." oninput="filterSpells(this.value)" />
+                    <div class="spell-search-results" id="spellSearchResults"></div>
+                    <div class="spell-search-hint">D&amp;D 5e SRD (2014) &bull; Press Esc to close</div>
+                </div>
             </div>
 
             <div id="appModalOverlay" class="app-modal-overlay">
@@ -654,10 +772,17 @@
                 ctrlDiv.className = 'editor-injected-ui';
                 ctrlDiv.contentEditable = 'false';
                 ctrlDiv.style.cssText = 'display: flex; gap: 8px; justify-content: flex-end; align-items: center; margin-top: 10px; padding-top: 5px; border-top: 1px dashed #d4c4a8;';
+                // Check if this table is inside a spell block (grimoire)
+                const isSpellTable = table.closest('.spell-level-block') !== null;
+                const isWeaponTable = !isSpellTable && table.closest('.epic-scroll') !== null;
+                const spellBtn = isSpellTable ? `<button onclick="openSpellSearch(this)" style="cursor: pointer; background: transparent; border: 1px solid #3b82f6; color: #3b82f6; padding: 4px 10px; font-weight: bold; font-size: 0.85em;">🔍 Search Spell</button>` : '';
                 ctrlDiv.innerHTML = `
-                    <button onclick="addRowToTable(this)" style="cursor: pointer; background: transparent; border: 1px solid #10b981; color: #10b981; padding: 4px 10px; font-weight: bold; font-size: 0.85em;">➕ Add Row</button>
-                    <button onclick="removeRowFromTable(this)" style="cursor: pointer; background: transparent; border: 1px solid #ef4444; color: #ef4444; padding: 4px 10px; font-weight: bold; font-size: 0.85em;">➖ Remove Last</button>
+                    ${spellBtn}
+                    <button onclick="addRowToTable(this)" style="cursor: pointer; background: transparent; border: 1px solid #10b981; color: #10b981; padding: 4px 10px; font-weight: bold; font-size: 0.85em;">➕ Add ${isWeaponTable ? 'Weapon' : 'Row'}</button>
                 `;
+
+                // Inject per-row delete buttons
+                injectRowDeleteButtons(table);
                 
                 // For the grimoire tables, they have footers. Put the controls there.
                 let nextEl = table.nextElementSibling;
@@ -830,24 +955,103 @@
             while(prev && prev.tagName !== 'TABLE') {
                 prev = prev.previousElementSibling;
             }
-            
+
             if (prev && prev.tagName === 'TABLE') {
                 const tbody = prev.querySelector('tbody') || prev;
-                const rows = tbody.querySelectorAll('tr');
-                
-                // For tables with <thead/>, rows[0] is data. For others, rows[0] is header.
-                const isTheadTable = prev.querySelector('thead') !== null;
-                const dataRowIndex = isTheadTable ? 0 : 1;
+                const isWeaponTable = prev.closest('.epic-scroll') !== null && !prev.closest('.spell-level-block');
 
-                if (rows.length >= (isTheadTable ? 1 : 2)) {
-                    const lastRow = rows[rows.length - 1];
-                    const newRow = lastRow.cloneNode(true);
-                    newRow.querySelectorAll('td').forEach(td => td.innerHTML = '...');
-                    tbody.appendChild(newRow);
-                    makeSymbolsClickable(); 
-                    pushState();
+                if (isWeaponTable) {
+                    // Add weapon row + info sub-row (range, ammo, notes)
+                    const weaponRow = document.createElement('tr');
+                    weaponRow.className = 'epic-row-hover';
+                    weaponRow.style.borderBottom = 'none';
+                    weaponRow.innerHTML = `
+                        <td style="padding: 6px 4px 2px; font-weight: bold;">...</td>
+                        <td style="padding: 6px 4px 2px; color: #27ae60; font-weight: bold; text-align: center;">+0</td>
+                        <td style="padding: 6px 4px 2px; color: #8b1e0b; text-align: right;">...</td>
+                    `;
+                    const ammoRow = document.createElement('tr');
+                    ammoRow.style.borderBottom = '1px dashed #d4c4a8';
+                    ammoRow.innerHTML = `
+                        <td colspan="3" style="padding: 0 4px 6px; font-size: 0.8em; color: #666; line-height: 1.6;">
+                            Range: ...<br>
+                            <span style="color: #5c2509; font-weight: bold;">Ammo:</span> ...
+                        </td>
+                    `;
+                    tbody.appendChild(weaponRow);
+                    tbody.appendChild(ammoRow);
+                } else {
+                    const rows = tbody.querySelectorAll('tr');
+                    const isTheadTable = prev.querySelector('thead') !== null;
+
+                    if (rows.length >= (isTheadTable ? 1 : 2)) {
+                        // Find last "main" row (not a sub-row with colspan)
+                        let templateRow = null;
+                        for (let i = rows.length - 1; i >= 0; i--) {
+                            const td = rows[i].querySelector('td');
+                            if (!td || td.colSpan <= 1) { templateRow = rows[i]; break; }
+                        }
+                        if (templateRow) {
+                            const newRow = templateRow.cloneNode(true);
+                            // Clear content but preserve structure
+                            newRow.querySelectorAll('td').forEach(td => {
+                                // Remove any delete buttons from clone
+                                td.querySelectorAll('.row-delete-btn').forEach(b => b.remove());
+                                td.innerHTML = '...';
+                            });
+                            tbody.appendChild(newRow);
+                        }
+                    }
                 }
+                injectRowDeleteButtons(prev);
+                makeSymbolsClickable();
+                pushState();
             }
+        }
+
+        function injectRowDeleteButtons(table) {
+            const tbody = table.querySelector('tbody') || table;
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            const isTheadTable = table.querySelector('thead') !== null;
+            const headerRowIndex = isTheadTable ? -1 : 0;
+
+            rows.forEach((row, i) => {
+                // Skip header row
+                if (i === headerRowIndex) return;
+                // Skip sub-rows (ammo/description rows with colspan) — they'll be deleted with their parent
+                const firstTd = row.querySelector('td');
+                if (firstTd && firstTd.colSpan > 1) return;
+                // Skip rows that already have a delete button
+                if (row.querySelector('.row-delete-btn')) return;
+
+                const lastCell = row.querySelector('td:last-child');
+                if (!lastCell) return;
+
+                const delBtn = document.createElement('span');
+                delBtn.className = 'row-delete-btn editor-injected-ui';
+                delBtn.contentEditable = 'false';
+                delBtn.innerHTML = '✕';
+                delBtn.title = 'Delete this row';
+                delBtn.style.cssText = 'cursor:pointer;color:#ef4444;font-weight:bold;font-size:0.75em;opacity:0;transition:opacity 0.2s;margin-left:6px;padding:2px 4px;border-radius:3px;vertical-align:middle;';
+                delBtn.onclick = async function(e) {
+                    e.stopPropagation();
+                    // Remove the row and any sub-row after it (ammo/description)
+                    const nextRow = row.nextElementSibling;
+                    if (nextRow) {
+                        const nextTd = nextRow.querySelector('td');
+                        if (nextTd && nextTd.colSpan > 1) nextRow.remove();
+                    }
+                    row.remove();
+                    pushState();
+                };
+
+                // Show on row hover
+                row.addEventListener('mouseenter', () => delBtn.style.opacity = '1');
+                row.addEventListener('mouseleave', () => delBtn.style.opacity = '0');
+
+                lastCell.style.position = 'relative';
+                lastCell.appendChild(delBtn);
+            });
         }
 
         function removeRowFromTable(btn) {
@@ -858,11 +1062,11 @@
             while(prev && prev.tagName !== 'TABLE') {
                 prev = prev.previousElementSibling;
             }
-            
+
             if (prev && prev.tagName === 'TABLE') {
                 const tbody = prev.querySelector('tbody') || prev;
                 const rows = tbody.querySelectorAll('tr');
-                
+
                 // For tables with <thead/>, index 0 is data. For others, index 0 is header. Keep at least 1 data row.
                 const isTheadTable = prev.querySelector('thead') !== null;
                 const minRows = isTheadTable ? 1 : 2;
@@ -959,6 +1163,273 @@
                 addButtonContainer.insertAdjacentHTML('beforebegin', htmlBlock);
                 makeSymbolsClickable();
                 injectInlineControls();
+                pushState();
+            }
+        }
+
+        // ==========================================
+        // SPELL SEARCH (D&D 5e SRD 2014 API)
+        // ==========================================
+        let spellIndex = null;
+        let spellSearchTargetTable = null;
+
+        async function loadSpellIndex() {
+            if (spellIndex) return spellIndex;
+            try {
+                const res = await fetch('https://www.dnd5eapi.co/api/2014/spells');
+                const data = await res.json();
+                spellIndex = data.results; // [{index, name, level}, ...]
+                return spellIndex;
+            } catch (e) {
+                console.error('Failed to load spell index:', e);
+                return null;
+            }
+        }
+
+        function openSpellSearch(btn) {
+            // Find the table this button belongs to
+            let el = btn.parentElement;
+            while (el && el.tagName !== 'TABLE') {
+                el = el.previousElementSibling || el.parentElement;
+                if (el && el.tagName === 'TABLE') break;
+                if (el && el.querySelector && el !== btn.parentElement) {
+                    const tbl = el.querySelector('table');
+                    if (tbl) { el = tbl; break; }
+                }
+            }
+            // More reliable: find the table via the spell-level-block
+            const block = btn.closest('.spell-level-block') || btn.closest('.spell-footer')?.closest('.spell-level-block');
+            if (block) {
+                spellSearchTargetTable = block.querySelector('table');
+            } else {
+                // Fallback: walk backwards from button
+                let prev = btn.closest('.editor-injected-ui');
+                if (prev) {
+                    let sib = prev.previousElementSibling;
+                    while (sib && sib.tagName !== 'TABLE') sib = sib.previousElementSibling;
+                    spellSearchTargetTable = sib;
+                }
+            }
+
+            const overlay = document.getElementById('spellSearchOverlay');
+            overlay.classList.add('open');
+            const input = document.getElementById('spellSearchInput');
+            input.value = '';
+            input.focus();
+            document.getElementById('spellSearchResults').innerHTML = '<div class="spell-search-item loading">Loading spell list...</div>';
+
+            loadSpellIndex().then(spells => {
+                if (!spells) {
+                    document.getElementById('spellSearchResults').innerHTML = '<div class="spell-search-item loading">Failed to load. Check internet connection.</div>';
+                    return;
+                }
+                filterSpells('');
+            });
+        }
+
+        function closeSpellSearch() {
+            document.getElementById('spellSearchOverlay').classList.remove('open');
+            spellSearchTargetTable = null;
+        }
+
+        function filterSpells(query) {
+            if (!spellIndex) return;
+            const results = document.getElementById('spellSearchResults');
+            const q = query.toLowerCase().trim();
+            const filtered = q ? spellIndex.filter(s => s.name.toLowerCase().includes(q)) : spellIndex;
+            const shown = filtered.slice(0, 50);
+
+            if (shown.length === 0) {
+                results.innerHTML = '<div class="spell-search-item loading">No spells found</div>';
+                return;
+            }
+
+            results.innerHTML = shown.map(s => {
+                const lvlText = s.level === 0 ? 'Cantrip' : 'Lvl ' + s.level;
+                return `<div class="spell-search-item" onclick="selectSpell('${s.index}')">
+                    <span>${s.name}</span>
+                    <span class="spell-lvl">${lvlText}</span>
+                </div>`;
+            }).join('');
+        }
+
+        async function selectSpell(index) {
+            const results = document.getElementById('spellSearchResults');
+            results.innerHTML = '<div class="spell-search-item loading">Fetching spell data...</div>';
+
+            try {
+                const res = await fetch('https://www.dnd5eapi.co/api/2014/spells/' + index);
+                const spell = await res.json();
+
+                insertSpellIntoTable(spell);
+                closeSpellSearch();
+            } catch (e) {
+                results.innerHTML = '<div class="spell-search-item loading">Failed to fetch spell. Try again.</div>';
+            }
+        }
+
+        function insertSpellIntoTable(spell) {
+            if (!spellSearchTargetTable) return;
+            const tbody = spellSearchTargetTable.querySelector('tbody') || spellSearchTargetTable;
+
+            // Build a condensed effect string
+            let effect = '';
+            if (spell.damage && spell.damage.damage_at_slot_level) {
+                const levels = Object.keys(spell.damage.damage_at_slot_level);
+                const baseDmg = spell.damage.damage_at_slot_level[levels[0]];
+                const dmgType = spell.damage.damage_type ? spell.damage.damage_type.name : '';
+                effect = baseDmg + ' ' + dmgType.toLowerCase();
+            } else if (spell.heal_at_slot_level) {
+                const levels = Object.keys(spell.heal_at_slot_level);
+                effect = spell.heal_at_slot_level[levels[0]] + ' healing';
+            } else if (spell.desc && spell.desc.length > 0) {
+                // Take first sentence of description
+                const firstDesc = spell.desc[0];
+                const firstSentence = firstDesc.split('.')[0];
+                effect = firstSentence.length > 80 ? firstSentence.substring(0, 77) + '...' : firstSentence;
+            }
+
+            // Add duration/concentration info
+            if (spell.concentration) {
+                effect += ' (C)';
+            }
+
+            const castTime = spell.casting_time || '1 action';
+            // Capitalize first letter
+            const castTimeClean = castTime.charAt(0).toUpperCase() + castTime.slice(1);
+
+            // Build full description
+            const fullDesc = (spell.desc || []).join('\n\n');
+            const higherLevel = (spell.higher_level || []).join('\n\n');
+            let descHtml = fullDesc.replace(/\n\n/g, '<br><br>');
+            if (higherLevel) {
+                descHtml += '<br><br><strong style="color:#5c2509;">At Higher Levels:</strong> ' + higherLevel.replace(/\n\n/g, '<br><br>');
+            }
+            // Add components & duration info
+            const components = (spell.components || []).join(', ') + (spell.material ? ' (' + spell.material + ')' : '');
+            const duration = (spell.concentration ? 'Concentration, ' : '') + (spell.duration || '');
+            descHtml = '<span style="color:#5c2509;font-weight:bold;font-size:0.85em;">Components:</span> ' + components + ' &nbsp;|&nbsp; <span style="color:#5c2509;font-weight:bold;font-size:0.85em;">Duration:</span> ' + duration + '<br><br>' + descHtml;
+
+            const descId = 'spell-desc-' + Date.now();
+
+            const newRow = document.createElement('tr');
+            newRow.className = 'epic-row-hover';
+            newRow.style.borderBottom = 'none';
+            newRow.innerHTML = `
+                <td style="padding: 6px 6px 2px; font-weight: bold; cursor: pointer; color: #2b2b2b;" onclick="const d=document.getElementById('${descId}');d.style.display=d.style.display==='none'?'table-row':'none';" title="Click to toggle description">${spell.name} <span style="font-size:0.7em;color:#94a3b8;">&#9660;</span></td>
+                <td style="padding: 6px 6px 2px;">${castTimeClean}</td>
+                <td style="padding: 6px 6px 2px;">${spell.range}</td>
+                <td style="padding: 6px 6px 2px; color: #555;">${effect}</td>
+            `;
+
+            const descRow = document.createElement('tr');
+            descRow.id = descId;
+            descRow.style.display = 'none';
+            descRow.style.borderBottom = '1px solid #f4f1ea';
+            descRow.innerHTML = `
+                <td colspan="4" style="padding: 4px 6px 8px; font-size: 0.8em; color: #444; line-height: 1.5; background: #faf8f5; border-radius: 0 0 4px 4px;">${descHtml}</td>
+            `;
+
+            tbody.appendChild(newRow);
+            tbody.appendChild(descRow);
+            pushState();
+        }
+
+        // Esc key to close spell search
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('spellSearchOverlay').classList.contains('open')) {
+                closeSpellSearch();
+            }
+        });
+
+        // ==========================================
+        // QUICK FILL SIDEBAR
+        // ==========================================
+        function toggleQuickFill() {
+            const sidebar = document.getElementById('qfSidebar');
+            sidebar.classList.toggle('open');
+            if (sidebar.classList.contains('open')) syncQuickFillFromSheet();
+        }
+
+        function syncQuickFillFromSheet() {
+            const canvas = document.getElementById('visualCanvas');
+            // Simple text fields
+            document.querySelectorAll('[data-qf]').forEach(input => {
+                const id = input.dataset.qf;
+                const el = canvas.querySelector('#' + id);
+                if (!el) return;
+                if (id === 'stat-speed') {
+                    // Speed has "35 \n FT" structure — extract just the number
+                    input.value = el.textContent.replace(/FT/i, '').trim();
+                } else {
+                    input.value = el.textContent.trim();
+                }
+            });
+            // Ability scores
+            document.querySelectorAll('[data-qf-stat]').forEach(input => {
+                const stat = input.dataset.qfStat;
+                const scoreEl = canvas.querySelector('#score-' + stat);
+                if (scoreEl) input.value = scoreEl.textContent.trim();
+                const modEl = canvas.querySelector('#mod-' + stat);
+                const qfMod = document.getElementById('qf-mod-' + stat);
+                if (modEl && qfMod) qfMod.textContent = modEl.textContent.trim();
+            });
+            // Portrait URL
+            const img = canvas.querySelector('#char-portrait');
+            if (img) document.getElementById('qfPortraitUrl').value = img.src;
+        }
+
+        function calcMod(score) {
+            const mod = Math.floor((score - 10) / 2);
+            return mod >= 0 ? '+' + mod : '' + mod;
+        }
+
+        // Live sync: text fields
+        document.addEventListener('input', function(e) {
+            const canvas = document.getElementById('visualCanvas');
+            if (e.target.dataset.qf) {
+                const id = e.target.dataset.qf;
+                const el = canvas.querySelector('#' + id);
+                if (!el) return;
+                if (e.target.dataset.qfSpeed) {
+                    // Speed has structure: "35 <br><span>FT</span>"
+                    // Find the first text node and update it
+                    for (let node of el.childNodes) {
+                        if (node.nodeType === 3) { node.textContent = e.target.value + ' '; break; }
+                    }
+                } else {
+                    el.textContent = e.target.value;
+                }
+                pushState();
+            }
+            if (e.target.dataset.qfStat) {
+                const stat = e.target.dataset.qfStat;
+                const score = parseInt(e.target.value) || 10;
+                const mod = calcMod(score);
+                // Update score on sheet
+                const scoreEl = canvas.querySelector('#score-' + stat);
+                if (scoreEl) scoreEl.textContent = score;
+                // Update modifier on sheet
+                const modEl = canvas.querySelector('#mod-' + stat);
+                if (modEl) modEl.textContent = mod;
+                // Update modifier display in sidebar
+                const qfMod = document.getElementById('qf-mod-' + stat);
+                if (qfMod) qfMod.textContent = mod;
+                pushState();
+            }
+        });
+
+        function applyPortraitUrl() {
+            const url = document.getElementById('qfPortraitUrl').value.trim();
+            if (!url) return;
+            const canvas = document.getElementById('visualCanvas');
+            let img = canvas.querySelector('#char-portrait');
+            if (img) {
+                img.src = url;
+                img.dataset.portraitX = 0;
+                img.dataset.portraitY = 0;
+                img.dataset.portraitScale = 1;
+                applyPortraitTransform(img, 0, 0, 1);
                 pushState();
             }
         }

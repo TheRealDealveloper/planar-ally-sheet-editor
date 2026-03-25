@@ -153,10 +153,10 @@
   <div style="display: flex; justify-content: space-between; align-items: flex-start; position: relative; z-index: 5; gap: 20px;">
     <div style="flex: 1; display: flex; gap: 15px; align-items: center; min-width: 0;">
       <div class="dark-metal gold-border epic-hover" style="padding: 10px 20px; border-radius: 8px; border-width: 2px; min-width: 0; overflow: hidden; flex-grow: 1; text-align: center;">
-        <h1 style="margin: 0px; font-family: Cinzel, serif; font-size: 2.8em; text-transform: uppercase; letter-spacing: 2px; white-space: nowrap; overflow: hidden;" class="gold-text">Aros</h1>
+        <h1 id="char-name" style="margin: 0px; font-family: Cinzel, serif; font-size: 2.8em; text-transform: uppercase; letter-spacing: 2px; white-space: nowrap; overflow: hidden;" class="gold-text">Aros</h1>
       </div>
       <div class="stat-ring epic-hover" style="width: 70px;height: 70px;margin-top: -10px;flex-shrink: 0;">
-        <span style="font-family: Cinzel, serif; font-weight: bold; font-size: 1.5em; color: rgb(139, 30, 11);">+2</span>
+        <span id="prof-bonus" style="font-family: Cinzel, serif; font-weight: bold; font-size: 1.5em; color: rgb(139, 30, 11);">+2</span>
         <div class="stat-label" style="bottom: -10px; font-size: 0.6em; background: #8b1e0b;">PROF BONUS</div>
       </div>
     </div>
@@ -345,19 +345,19 @@
     </div>
     <div style="position: relative; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 20px;">
       <div style="position: absolute; top: -50px; right: -20px; width: 110%; height: 120%; z-index: 1; pointer-events: none;">
-        <img src="https://raw.githubusercontent.com/TheRealDealveloper/planar-ally-sheet-editor/refs/heads/main/Characters/aros.png" style="width: 100%; height: 100%; object-fit: cover; object-position: center 20%; filter: contrast(1.1) saturate(1.1); mix-blend-mode: multiply; transform: translate(0px, 0px) scale(0.9); transform-origin: center center;" class="fade-image" draggable="false" data-portrait-x="0" data-portrait-y="0" data-portrait-scale="0.8999999999999999">
+        <img id="char-portrait" src="https://raw.githubusercontent.com/TheRealDealveloper/planar-ally-sheet-editor/refs/heads/main/Characters/aros.png" style="width: 100%; height: 100%; object-fit: cover; object-position: center 20%; filter: contrast(1.1) saturate(1.1); mix-blend-mode: multiply; transform: translate(0px, 0px) scale(0.9); transform-origin: center center;" class="fade-image" draggable="false" data-portrait-x="0" data-portrait-y="0" data-portrait-scale="0.8999999999999999">
       </div>
       <div style="display: flex; justify-content: space-around; position: relative; z-index: 5; margin-bottom: auto; padding-top: 10px;">
         <div class="stat-ring epic-hover" style="width: 80px; height: 80px;">
-          <span style="font-family: 'Cinzel', serif; font-size: 2em; font-weight: bold; color: #2c3e50;">15</span>
+          <span id="stat-ac" style="font-family: 'Cinzel', serif; font-size: 2em; font-weight: bold; color: #2c3e50;">15</span>
           <div class="stat-label" style="background: #2c3e50;">AC</div>
         </div>
         <div class="stat-ring epic-hover" style="width: 70px; height: 70px;">
-          <span style="font-family: 'Cinzel', serif; font-size: 1.5em; font-weight: bold; color: #27ae60;">+3</span>
+          <span id="stat-init" style="font-family: 'Cinzel', serif; font-size: 1.5em; font-weight: bold; color: #27ae60;">+3</span>
           <div class="stat-label" style="background: #b8860b; color: #fff; border-color: #fff;">INIT</div>
         </div>
         <div class="stat-ring epic-hover" style="width: 70px; height: 70px;">
-          <span style="font-family: 'Cinzel', serif; font-size: 1.2em; font-weight: bold; color: #2b2b2b; text-align: center; line-height: 1;">35 <br>
+          <span id="stat-speed" style="font-family: 'Cinzel', serif; font-size: 1.2em; font-weight: bold; color: #2b2b2b; text-align: center; line-height: 1;">35 <br>
             <span style="font-size: 0.5em;">FT</span>
           </span>
           <div class="stat-label" style="background: #5c2509;">SPEED</div>
@@ -365,33 +365,33 @@
       </div>
       <div style="display: flex; justify-content: center; gap: 15px; position: relative; z-index: 10; flex-wrap: wrap; margin-top: 150px;">
         <div class="stat-ring epic-hover">
-          <div class="stat-mod">+0</div>
-          <span style="font-family: 'Cinzel', serif; font-size: 2.2em; font-weight: 900; color: #8b1e0b;">10</span>
+          <div class="stat-mod" id="mod-str">+0</div>
+          <span id="score-str" style="font-family: 'Cinzel', serif; font-size: 2.2em; font-weight: 900; color: #8b1e0b;">10</span>
           <div class="stat-label">STR</div>
         </div>
         <div class="stat-ring epic-hover" style="transform: translateY(-20px);">
-          <div class="stat-mod">+3</div>
-          <span style="font-family: 'Cinzel', serif; font-size: 2.2em; font-weight: 900; color: #8b1e0b;">16</span>
+          <div class="stat-mod" id="mod-dex">+3</div>
+          <span id="score-dex" style="font-family: 'Cinzel', serif; font-size: 2.2em; font-weight: 900; color: #8b1e0b;">16</span>
           <div class="stat-label">DEX</div>
         </div>
         <div class="stat-ring epic-hover" style="transform: translateY(-30px);">
-          <div class="stat-mod">+2</div>
-          <span style="font-family: 'Cinzel', serif; font-size: 2.2em; font-weight: 900; color: #8b1e0b;">15</span>
+          <div class="stat-mod" id="mod-con">+2</div>
+          <span id="score-con" style="font-family: 'Cinzel', serif; font-size: 2.2em; font-weight: 900; color: #8b1e0b;">15</span>
           <div class="stat-label">CON</div>
         </div>
         <div class="stat-ring epic-hover" style="transform: translateY(-30px);">
-          <div class="stat-mod">0</div>
-          <span style="font-family: 'Cinzel', serif; font-size: 2.2em; font-weight: 900; color: #8b1e0b;">10</span>
+          <div class="stat-mod" id="mod-int">0</div>
+          <span id="score-int" style="font-family: 'Cinzel', serif; font-size: 2.2em; font-weight: 900; color: #8b1e0b;">10</span>
           <div class="stat-label">INT</div>
         </div>
         <div class="stat-ring epic-hover" style="transform: translateY(-20px);">
-          <div class="stat-mod">+2</div>
-          <span style="font-family: 'Cinzel', serif; font-size: 2.2em; font-weight: 900; color: #8b1e0b;">14</span>
+          <div class="stat-mod" id="mod-wis">+2</div>
+          <span id="score-wis" style="font-family: 'Cinzel', serif; font-size: 2.2em; font-weight: 900; color: #8b1e0b;">14</span>
           <div class="stat-label">WIS</div>
         </div>
         <div class="stat-ring epic-hover">
-          <div class="stat-mod">-1</div>
-          <span style="font-family: 'Cinzel', serif; font-size: 2.2em; font-weight: 900; color: #8b1e0b;">8</span>
+          <div class="stat-mod" id="mod-cha">-1</div>
+          <span id="score-cha" style="font-family: 'Cinzel', serif; font-size: 2.2em; font-weight: 900; color: #8b1e0b;">8</span>
           <div class="stat-label">CHA</div>
         </div>
       </div>
@@ -415,14 +415,19 @@
                 <th style="padding: 4px;">Atk</th>
                 <th style="padding: 4px; text-align: right;">Damage</th>
               </tr>
-              <tr class="epic-row-hover" style="border-bottom: 1px dashed #d4c4a8;">
-                <td style="padding: 6px 4px; font-weight: bold;">Longbow</td>
-                <td style="padding: 6px 4px; color: #27ae60; font-weight: bold; text-align: center;">+5</td>
-                <td style="padding: 6px 4px; color: #8b1e0b; text-align: right;">1d8+3 p.</td>
+              <tr class="epic-row-hover" style="border-bottom: none;">
+                <td style="padding: 6px 4px 2px; font-weight: bold;">Longbow</td>
+                <td style="padding: 6px 4px 2px; color: #27ae60; font-weight: bold; text-align: center;">+5</td>
+                <td style="padding: 6px 4px 2px; color: #8b1e0b; text-align: right;">1d8+3 p.</td>
+              </tr>
+              <tr style="border-bottom: 1px dashed #d4c4a8;">
+                <td colspan="3" style="padding: 0 4px 6px; font-size: 0.8em; color: #666; line-height: 1.6;">
+                  Range: 150/600 ft<br>
+                  <span style="color: #5c2509; font-weight: bold;">Ammo:</span> Arrows ×20
+                </td>
               </tr>
               <tr class="epic-row-hover" style="border-bottom: 1px dashed #d4c4a8;">
-                <td style="padding: 6px 4px; font-weight: bold;">Shortsword <br>
-                </td>
+                <td style="padding: 6px 4px; font-weight: bold;">Shortsword</td>
                 <td style="padding: 6px 4px; color: #27ae60; font-weight: bold; text-align: center;">+5</td>
                 <td style="padding: 6px 4px; color: #8b1e0b; text-align: right;">1d6+3 s.</td>
               </tr>

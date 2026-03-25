@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(tr '>' '>\\\\n')"
+      "Bash(tr '>' '>\\\\n')",
+      "Bash(curl -s \"https://www.dnd5eapi.co/api/2014/spells?limit=3\")",
+      "Bash(python -m json.tool)",
+      "Bash(curl -s https://www.dnd5eapi.co/api/2014/spells?limit=3)",
+      "Bash(curl -s \"https://www.dnd5eapi.co/api/2014/spells/fireball\")",
+      "Bash(curl -s https://www.dnd5eapi.co/api/2014/spells/fireball)"
     ]
   }
 }
