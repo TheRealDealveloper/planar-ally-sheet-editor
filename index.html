@@ -35,6 +35,24 @@
         .fullscreen-btn { margin-left: auto; background: #3b82f6; color: #fff; border-color: #2563eb; }
         .fullscreen-btn:hover { background: #2563eb; }
         .divider { border-left: 2px solid #334155; margin: 0 5px; height: 24px; }
+
+        /* TEXT FORMATTING TOOLBAR */
+        .fmt-btn { background: #1e293b; border: 1px solid #475569; color: #f8fafc; border-radius: 6px; padding: 6px 10px; font-size: 1em; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.2); min-width: 32px; text-align: center; }
+        .fmt-btn:hover { background: #334155; border-color: #64748b; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.4); }
+        .fmt-btn:active { transform: translateY(1px); box-shadow: none; }
+        .fmt-btn.active { background: #475569; border-color: #10b981; box-shadow: 0 0 6px rgba(16, 185, 129, 0.4); }
+        .fmt-select { background: #1e293b; border: 1px solid #475569; color: #f8fafc; border-radius: 6px; padding: 6px 8px; font-size: 0.85em; cursor: pointer; transition: all 0.2s ease; }
+        .fmt-select:hover { border-color: #64748b; }
+        .fmt-select option { background: #1e293b; color: #f8fafc; }
+        /* PORTRAIT INTERACTION */
+        .portrait-interactive { cursor: grab !important; pointer-events: auto !important; outline: 2px dashed transparent; transition: outline 0.2s; }
+        .portrait-interactive:hover { outline: 2px dashed rgba(16, 185, 129, 0.6); }
+        .portrait-interactive:active { cursor: grabbing !important; }
+        .portrait-hint { position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); color: #fff; font-size: 0.7em; padding: 3px 8px; border-radius: 4px; white-space: nowrap; opacity: 0; transition: opacity 0.2s; pointer-events: none; z-index: 100; }
+        .portrait-interactive:hover + .portrait-hint, .portrait-interactive:hover ~ .portrait-hint { opacity: 1; }
+
+        .fmt-color-wrapper { position: relative; display: inline-flex; align-items: center; }
+        .fmt-color-input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; top: 0; left: 0; }
         
         #visualCanvas { padding: 20px; min-height: 400px; outline: none; overflow-y: auto; max-height: 700px; background-color: #0f172a; }
         #sheetContainer:fullscreen #visualCanvas { max-height: none; }
@@ -78,6 +96,203 @@
         .save-load-btn:hover { background: #2563eb; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(59, 130, 246, 0.4); }
         .save-del-btn { background: #ef4444; color: #fff; }
         .save-del-btn:hover { background: #dc2626; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(239, 68, 68, 0.4); }
+
+        /* QUICK FILL SIDEBAR */
+        .qf-sidebar { position: absolute; top: 0; right: 0; width: 340px; height: 100%; background: rgba(15, 23, 42, 0.97); backdrop-filter: blur(12px); border-left: 1px solid #334155; z-index: 50; display: none; flex-direction: column; overflow: hidden; }
+        .qf-sidebar.open { display: flex; }
+        .qf-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid #334155; flex-shrink: 0; }
+        .qf-header h3 { margin: 0; color: #fbbf24; font-size: 1.1em; font-family: 'Segoe UI', sans-serif; }
+        .qf-close { background: none; border: none; color: #94a3b8; font-size: 1.4em; cursor: pointer; padding: 4px 8px; border-radius: 4px; }
+        .qf-close:hover { color: #ef4444; background: rgba(239,68,68,0.1); }
+        .qf-body { overflow-y: auto; padding: 12px 16px; flex: 1; }
+        .qf-section { margin-bottom: 16px; }
+        .qf-section-title { font-size: 0.75em; text-transform: uppercase; letter-spacing: 1.5px; color: #fbbf24; margin-bottom: 8px; font-weight: bold; border-bottom: 1px solid #334155; padding-bottom: 4px; }
+        .qf-row { display: flex; gap: 8px; margin-bottom: 6px; align-items: center; }
+        .qf-row label { font-size: 0.8em; color: #94a3b8; min-width: 55px; flex-shrink: 0; }
+        .qf-row input, .qf-row select { flex: 1; background: #0f172a; color: #f8fafc; border: 1px solid #475569; border-radius: 4px; padding: 5px 8px; font-size: 0.85em; min-width: 0; }
+        .qf-row input:focus { border-color: #fbbf24; outline: none; }
+        .qf-stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+        .qf-stat-cell { display: flex; flex-direction: column; align-items: center; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 6px 4px; }
+        .qf-stat-cell label { font-size: 0.7em; color: #fbbf24; font-weight: bold; min-width: unset; }
+        .qf-stat-cell input { width: 100%; text-align: center; padding: 4px; font-size: 1em; font-weight: bold; }
+        .qf-stat-cell .qf-mod { font-size: 0.75em; color: #34d399; margin-top: 2px; }
+        .qf-portrait-row { display: flex; gap: 8px; align-items: center; }
+        .qf-portrait-row input { flex: 1; }
+        .qf-portrait-row button { background: #3b82f6; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8em; white-space: nowrap; }
+        .qf-portrait-row button:hover { background: #2563eb; }
+        .qf-saves-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+        .qf-save-row { display: flex; align-items: center; gap: 4px; font-size: 0.8em; padding: 3px 6px; border-radius: 4px; background: #1e293b; }
+        .qf-save-row input[type="checkbox"] { accent-color: #34d399; }
+        .qf-save-row label { min-width: unset; color: #cbd5e1; }
+
+        /* SPELL SEARCH */
+        .spell-search-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.85); z-index: 999; align-items: flex-start; justify-content: center; padding-top: 80px; backdrop-filter: blur(4px); }
+        .spell-search-overlay.open { display: flex; }
+        .spell-search-box { background: #1e293b; border: 1px solid #475569; border-radius: 12px; width: 450px; max-width: 90%; box-shadow: 0 20px 40px rgba(0,0,0,0.8); overflow: hidden; display: flex; flex-direction: column; max-height: 70vh; }
+        .spell-search-box input { background: #0f172a; color: #f8fafc; border: none; padding: 14px 16px; font-size: 1.1em; outline: none; border-bottom: 1px solid #334155; }
+        .spell-search-box input::placeholder { color: #64748b; }
+        .spell-search-results { overflow-y: auto; max-height: 50vh; }
+        .spell-search-item { padding: 10px 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b; color: #cbd5e1; font-size: 0.9em; transition: background 0.1s; }
+        .spell-search-item:hover { background: #334155; color: #fff; }
+        .spell-search-item .spell-lvl { font-size: 0.75em; color: #94a3b8; background: #0f172a; padding: 2px 8px; border-radius: 4px; }
+        .spell-search-item.loading { justify-content: center; color: #64748b; padding: 20px; }
+        .spell-search-hint { padding: 8px 16px; font-size: 0.75em; color: #64748b; text-align: center; border-top: 1px solid #334155; }
+
+        /* ITEM SHOP - RETRO ZELDA GAME BOY STYLE */
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        .shop-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(8, 24, 8, 0.92); z-index: 998; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
+        .shop-overlay.open { display: flex; }
+        .shop-frame {
+            width: 780px; max-width: 95%; max-height: 90vh;
+            background: #0f380f;
+            border: 6px solid #306230;
+            border-radius: 4px;
+            box-shadow: 0 0 0 3px #0f380f, 0 0 0 6px #9bbc0f, 0 0 40px rgba(155, 188, 15, 0.15), inset 0 0 60px rgba(0,0,0,0.3);
+            display: flex; flex-direction: column;
+            font-family: 'Press Start 2P', monospace;
+            image-rendering: pixelated;
+            overflow: hidden;
+        }
+        .shop-header {
+            background: #306230;
+            padding: 12px 16px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 3px solid #9bbc0f;
+        }
+        .shop-header h3 { margin: 0; color: #9bbc0f; font-size: 16px; font-family: 'Press Start 2P', monospace; text-shadow: 2px 2px 0 #0f380f; letter-spacing: 1px; }
+        .shop-close { background: none; border: 2px solid #9bbc0f; color: #9bbc0f; font-family: 'Press Start 2P', monospace; font-size: 12px; cursor: pointer; padding: 4px 8px; transition: all 0.2s; }
+        .shop-close:hover { background: #9bbc0f; color: #0f380f; }
+        .shop-keeper {
+            padding: 10px 16px;
+            background: #1a4a1a;
+            border-bottom: 2px dashed #306230;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .shop-keeper-sprite {
+            font-size: 2em; line-height: 1;
+            animation: shopkeeper-bob 1.5s ease-in-out infinite;
+        }
+        @keyframes shopkeeper-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+        .shop-keeper-msg {
+            color: #d4e857; font-size: 12px; font-family: 'Press Start 2P', monospace;
+            line-height: 2;
+            border: 2px solid #306230; background: #0f380f; padding: 10px 14px; border-radius: 2px;
+            flex: 1;
+            text-shadow: 1px 1px 0 #0a2a0a;
+        }
+        .shop-tabs {
+            display: flex; overflow-x: auto;
+            background: #0f380f;
+            border-bottom: 2px solid #306230;
+            scrollbar-width: none;
+        }
+        .shop-tabs::-webkit-scrollbar { display: none; }
+        .shop-tab {
+            padding: 10px 14px; font-family: 'Press Start 2P', monospace; font-size: 10px;
+            color: #8bac0f; background: none; border: none; cursor: pointer;
+            white-space: nowrap; transition: all 0.15s;
+            border-right: 1px solid #1a4a1a;
+        }
+        .shop-tab:hover { color: #d4e857; background: #1a4a1a; }
+        .shop-tab.active { color: #0f380f; background: #9bbc0f; font-weight: bold; }
+        .shop-search {
+            padding: 8px 12px; background: #1a4a1a; border-bottom: 2px solid #306230;
+        }
+        .shop-search input {
+            width: 100%; background: #0f380f; color: #d4e857; border: 2px solid #306230;
+            padding: 12px 14px; font-family: 'Press Start 2P', monospace; font-size: 12px;
+            outline: none; box-sizing: border-box;
+        }
+        .shop-search input::placeholder { color: #4a7a2e; }
+        .shop-search input:focus { border-color: #9bbc0f; }
+        .shop-items {
+            flex: 1; overflow-y: auto; background: #0f380f;
+            min-height: 200px; max-height: 45vh;
+        }
+        .shop-items::-webkit-scrollbar { width: 8px; }
+        .shop-items::-webkit-scrollbar-track { background: #0f380f; }
+        .shop-items::-webkit-scrollbar-thumb { background: #306230; border: 1px solid #0f380f; }
+        .shop-item {
+            display: flex; align-items: center; padding: 10px 14px; gap: 12px;
+            border-bottom: 1px solid #1a4a1a; cursor: pointer; transition: all 0.1s;
+            color: #c8e040;
+        }
+        .shop-item:hover { background: #1a4a1a; color: #d4e857; }
+        .shop-item-icon { font-size: 1.5em; width: 32px; text-align: center; flex-shrink: 0; }
+        .shop-item-name { flex: 1; font-family: 'Press Start 2P', monospace; font-size: 11px; line-height: 1.8; }
+        .shop-item-cost { font-family: 'Press Start 2P', monospace; font-size: 11px; color: #d4e857; text-align: right; white-space: nowrap; text-shadow: 1px 1px 0 #0a2a0a; }
+        .shop-item-add {
+            background: none; border: 2px solid #8bac0f; color: #8bac0f;
+            font-family: 'Press Start 2P', monospace; font-size: 9px;
+            padding: 6px 10px; cursor: pointer; transition: all 0.15s; flex-shrink: 0;
+        }
+        .shop-item-add:hover { border-color: #d4e857; color: #d4e857; background: #1a4a1a; }
+        .shop-item.expanded { background: #1a4a1a; }
+        .shop-item-details {
+            padding: 10px 16px 14px 56px;
+            font-family: 'Press Start 2P', monospace; font-size: 10px;
+            color: #8bac0f; line-height: 2.2; background: #1a4a1a;
+            border-bottom: 2px solid #306230;
+            display: none;
+        }
+        .shop-item-details.open { display: block; }
+        .shop-item-details span { color: #d4e857; }
+        .shop-loading {
+            padding: 30px; text-align: center; font-family: 'Press Start 2P', monospace;
+            font-size: 13px; color: #8bac0f;
+            animation: blink-loading 1s steps(2) infinite;
+        }
+        @keyframes blink-loading { 0% { opacity: 1; } 50% { opacity: 0.3; } }
+        .shop-footer {
+            padding: 8px 16px; background: #306230; border-top: 3px solid #9bbc0f;
+            text-align: center; font-family: 'Press Start 2P', monospace;
+            font-size: 9px; color: #8bac0f; letter-spacing: 0.5px;
+        }
+        .shop-added-flash {
+            animation: added-flash 0.6s ease-out;
+        }
+        @keyframes added-flash {
+            0% { background: #9bbc0f; color: #0f380f; }
+            100% { background: transparent; }
+        }
+        /* ITEM DETAIL PANEL */
+        .shop-detail-panel {
+            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: #0f380f; flex-direction: column; z-index: 10;
+        }
+        .shop-detail-panel.open { display: flex; }
+        .shop-detail-header {
+            background: #306230; padding: 12px 16px;
+            display: flex; align-items: center; gap: 14px;
+            border-bottom: 3px solid #9bbc0f;
+        }
+        .shop-detail-back {
+            background: none; border: 2px solid #9bbc0f; color: #9bbc0f;
+            font-family: 'Press Start 2P', monospace; font-size: 10px;
+            padding: 6px 10px; cursor: pointer; transition: all 0.2s;
+        }
+        .shop-detail-back:hover { background: #9bbc0f; color: #0f380f; }
+        .shop-detail-title {
+            font-family: 'Press Start 2P', monospace; font-size: 13px;
+            color: #d4e857; text-shadow: 2px 2px 0 #0f380f;
+        }
+        .shop-detail-body {
+            flex: 1; overflow-y: auto; padding: 20px;
+            font-family: 'Press Start 2P', monospace; font-size: 10px;
+            color: #8bac0f; line-height: 2.4;
+        }
+        .shop-detail-body .detail-row {
+            padding: 8px 0; border-bottom: 1px dashed #1a4a1a;
+        }
+        .shop-detail-body .detail-label { color: #d4e857; }
+        .shop-detail-body .detail-section {
+            margin-top: 16px; padding-top: 12px; border-top: 2px solid #306230;
+        }
+        .shop-detail-body .detail-desc {
+            background: #1a4a1a; padding: 14px; border: 2px solid #306230;
+            border-radius: 4px; margin-top: 8px; line-height: 2.2;
+            color: #c8e040; font-size: 9px;
+        }
     </style>
 </head>
 <body>
@@ -116,14 +331,173 @@
                     <button class="symbol-btn" onmousedown="event.preventDefault(); saveLocal()" title="Save Character to Browser" style="color: #34d399;">💾</button>
                     <button class="symbol-btn" onmousedown="event.preventDefault(); showLoadMenu()" title="Load Character from Browser" style="color: #60a5fa;">📂</button>
                     <button class="symbol-btn" onmousedown="event.preventDefault(); changePortrait()" title="Change Portrait Image">🖼️</button>
-                    <button class="symbol-btn" onmousedown="event.preventDefault(); changeTheme()" title="Change Theme Color">🎨</button>
+                    <button class="symbol-btn" id="portraitLockBtn" onmousedown="event.preventDefault(); togglePortraitLock()" title="Portrait Locked — Click to Unlock" style="color: #ef4444;">🔒</button>
+                    <button class="symbol-btn" onmousedown="event.preventDefault(); toggleQuickFill()" title="Quick Fill Character Data" style="color: #fbbf24;">📋</button>
+                    <button class="symbol-btn" onmousedown="event.preventDefault(); openItemShop()" title="Item Shop" style="color: #34d399;">🛒</button>
 
                     <button class="symbol-btn fullscreen-btn" onclick="toggleFullscreen()" title="Toggle Fullscreen">⛶</button>
                 </div>
+                <div class="toolbar-row">
+                    <span class="toolbar-label">Format:</span>
+                    <button class="fmt-btn" onmousedown="event.preventDefault(); execFmt('bold')" title="Bold (Ctrl+B)"><b>B</b></button>
+                    <button class="fmt-btn" onmousedown="event.preventDefault(); execFmt('italic')" title="Italic (Ctrl+I)"><i>I</i></button>
+                    <button class="fmt-btn" onmousedown="event.preventDefault(); execFmt('underline')" title="Underline (Ctrl+U)"><u>U</u></button>
+                    <button class="fmt-btn" onmousedown="event.preventDefault(); execFmt('strikeThrough')" title="Strikethrough"><s>S</s></button>
+
+                    <span class="divider"></span>
+
+                    <select class="fmt-select" onchange="execFontSize(this.value); this.value='';" title="Font Size">
+                        <option value="" disabled selected>Size</option>
+                        <option value="1">8pt</option>
+                        <option value="2">10pt</option>
+                        <option value="3">12pt</option>
+                        <option value="4">14pt</option>
+                        <option value="5">18pt</option>
+                        <option value="6">24pt</option>
+                        <option value="7">36pt</option>
+                    </select>
+
+                    <select class="fmt-select" onchange="execFontName(this.value); this.value='';" title="Font Family">
+                        <option value="" disabled selected>Font</option>
+                        <option value="Lora">Lora</option>
+                        <option value="Cinzel">Cinzel</option>
+                        <option value="Segoe UI">Segoe UI</option>
+                        <option value="Arial">Arial</option>
+                        <option value="Georgia">Georgia</option>
+                        <option value="Times New Roman">Times New Roman</option>
+                        <option value="Courier New">Courier New</option>
+                        <option value="Verdana">Verdana</option>
+                    </select>
+
+                    <span class="divider"></span>
+
+                    <label class="fmt-btn" title="Text Color" style="cursor:pointer; position:relative;">
+                        A <input type="color" id="fmtColorPicker" value="#ffffff" onmousedown="saveSelection()" style="position:absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer;" />
+                    </label>
+
+                    <span class="divider"></span>
+
+                    <button class="fmt-btn" onmousedown="event.preventDefault(); execFmt('justifyLeft')" title="Align Left">&#8676;</button>
+                    <button class="fmt-btn" onmousedown="event.preventDefault(); execFmt('justifyCenter')" title="Align Center">&#8633;</button>
+                    <button class="fmt-btn" onmousedown="event.preventDefault(); execFmt('justifyRight')" title="Align Right">&#8677;</button>
+
+                    <span class="divider"></span>
+
+                    <button class="fmt-btn" onmousedown="event.preventDefault(); execFmt('insertUnorderedList')" title="Bullet List">&#8226; List</button>
+                    <button class="fmt-btn" onmousedown="event.preventDefault(); execFmt('insertOrderedList')" title="Numbered List">1. List</button>
+                    <button class="fmt-btn" onmousedown="event.preventDefault(); execFmt('removeFormat')" title="Clear Formatting" style="color:#ef4444;">&#10005;</button>
+                </div>
             </div>
             
+            <!-- QUICK FILL SIDEBAR -->
+            <div id="qfSidebar" class="qf-sidebar">
+                <div class="qf-header">
+                    <h3>Quick Fill</h3>
+                    <button class="qf-close" onclick="toggleQuickFill()">&times;</button>
+                </div>
+                <div class="qf-body">
+                    <div class="qf-section">
+                        <div class="qf-section-title">Basic Info</div>
+                        <div class="qf-row"><label>Name</label><input type="text" data-qf="char-name" /></div>
+                        <div class="qf-row"><label>Class/Lvl</label><input type="text" data-qf="char-class-level" /></div>
+                        <div class="qf-row"><label>Race</label><input type="text" data-qf="char-race" /></div>
+                        <div class="qf-row"><label>Background</label><input type="text" data-qf="char-background" /></div>
+                        <div class="qf-row"><label>Alignment</label><input type="text" data-qf="char-alignment" /></div>
+                    </div>
+                    <div class="qf-section">
+                        <div class="qf-section-title">Physical</div>
+                        <div class="qf-row"><label>Age</label><input type="text" data-qf="char-age" /></div>
+                        <div class="qf-row"><label>Height</label><input type="text" data-qf="char-height" /></div>
+                        <div class="qf-row"><label>Weight</label><input type="text" data-qf="char-weight" /></div>
+                    </div>
+                    <div class="qf-section">
+                        <div class="qf-section-title">Portrait</div>
+                        <div class="qf-portrait-row">
+                            <input type="text" id="qfPortraitUrl" placeholder="Image URL..." />
+                            <button onclick="applyPortraitUrl()">Set</button>
+                        </div>
+                    </div>
+                    <div class="qf-section">
+                        <div class="qf-section-title">Ability Scores</div>
+                        <div class="qf-stats-grid">
+                            <div class="qf-stat-cell"><label>STR</label><input type="number" data-qf-stat="str" /><span class="qf-mod" id="qf-mod-str">+0</span></div>
+                            <div class="qf-stat-cell"><label>DEX</label><input type="number" data-qf-stat="dex" /><span class="qf-mod" id="qf-mod-dex">+0</span></div>
+                            <div class="qf-stat-cell"><label>CON</label><input type="number" data-qf-stat="con" /><span class="qf-mod" id="qf-mod-con">+0</span></div>
+                            <div class="qf-stat-cell"><label>INT</label><input type="number" data-qf-stat="int" /><span class="qf-mod" id="qf-mod-int">+0</span></div>
+                            <div class="qf-stat-cell"><label>WIS</label><input type="number" data-qf-stat="wis" /><span class="qf-mod" id="qf-mod-wis">+0</span></div>
+                            <div class="qf-stat-cell"><label>CHA</label><input type="number" data-qf-stat="cha" /><span class="qf-mod" id="qf-mod-cha">+0</span></div>
+                        </div>
+                    </div>
+                    <div class="qf-section">
+                        <div class="qf-section-title">Combat</div>
+                        <div class="qf-row"><label>AC</label><input type="number" data-qf="stat-ac" /></div>
+                        <div class="qf-row"><label>Initiative</label><input type="text" data-qf="stat-init" /></div>
+                        <div class="qf-row"><label>Speed</label><input type="text" data-qf="stat-speed" data-qf-speed="true" /></div>
+                        <div class="qf-row"><label>Prof</label><input type="text" data-qf="prof-bonus" /></div>
+                        <div class="qf-row"><label>HP</label><input type="number" data-qf="hp-current-val" style="width:60px;flex:none;" /> <span style="color:#94a3b8">/</span> <input type="number" data-qf="hp-max-val" style="width:60px;flex:none;" /></div>
+                    </div>
+                    <div class="qf-section">
+                        <div class="qf-section-title">Experience</div>
+                        <div class="qf-row"><label>Current</label><input type="number" data-qf="exp-current" /></div>
+                        <div class="qf-row"><label>Next Level</label><input type="number" data-qf="exp-max" /></div>
+                    </div>
+                    <div class="qf-section">
+                        <div class="qf-section-title">Coins</div>
+                        <div class="qf-row">
+                            <label>CP</label><input type="number" data-qf="coin-cp" style="width:50px;flex:none;" />
+                            <label>SP</label><input type="number" data-qf="coin-sp" style="width:50px;flex:none;" />
+                            <label>EP</label><input type="number" data-qf="coin-ep" style="width:50px;flex:none;" />
+                        </div>
+                        <div class="qf-row">
+                            <label>GP</label><input type="number" data-qf="coin-gp" style="width:50px;flex:none;" />
+                            <label>PP</label><input type="number" data-qf="coin-pp" style="width:50px;flex:none;" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div id="visualCanvas" contenteditable="true" spellcheck="false">
  
+            </div>
+
+            <!-- SPELL SEARCH OVERLAY -->
+            <div id="spellSearchOverlay" class="spell-search-overlay" onclick="if(event.target===this)closeSpellSearch()">
+                <div class="spell-search-box">
+                    <input type="text" id="spellSearchInput" placeholder="Search for a spell..." oninput="filterSpells(this.value)" />
+                    <div class="spell-search-results" id="spellSearchResults"></div>
+                    <div class="spell-search-hint">D&amp;D 5e SRD (2014) &bull; Press Esc to close</div>
+                </div>
+            </div>
+
+            <!-- ITEM SHOP OVERLAY -->
+            <div id="shopOverlay" class="shop-overlay" onclick="if(event.target===this)closeShop()">
+                <div class="shop-frame">
+                    <div class="shop-header">
+                        <h3>▸ ITEM SHOPPE ◂</h3>
+                        <button class="shop-close" onclick="closeShop()">✕ ESC</button>
+                    </div>
+                    <div class="shop-keeper">
+                        <div class="shop-keeper-sprite">🧙</div>
+                        <div class="shop-keeper-msg" id="shopKeeperMsg">Welcome, adventurer! Browse my wares... Everything ye need for the road ahead!</div>
+                    </div>
+                    <div class="shop-tabs" id="shopTabs"></div>
+                    <div class="shop-search">
+                        <input type="text" id="shopSearchInput" placeholder="SEARCH ITEMS..." oninput="filterShopItems(this.value)" />
+                    </div>
+                    <div class="shop-items" id="shopItems">
+                        <div class="shop-loading">LOADING WARES...</div>
+                    </div>
+                    <div class="shop-footer">D&amp;D 5e SRD &#x2022; Prices in GP &#x2022; Click item for details</div>
+
+                    <!-- ITEM DETAIL PANEL (slides over the list) -->
+                    <div class="shop-detail-panel" id="shopDetailPanel">
+                        <div class="shop-detail-header">
+                            <button class="shop-detail-back" onclick="closeItemDetail()">◀ BACK</button>
+                            <span class="shop-detail-title" id="shopDetailTitle">Item Name</span>
+                        </div>
+                        <div class="shop-detail-body" id="shopDetailBody"></div>
+                    </div>
+                </div>
             </div>
 
             <div id="appModalOverlay" class="app-modal-overlay">
@@ -291,11 +665,12 @@
             
             const clone = document.getElementById('visualCanvas').cloneNode(true);
             clone.querySelectorAll('.editor-injected-ui').forEach(el => el.remove());
+            clone.querySelectorAll('.portrait-interactive').forEach(el => el.classList.remove('portrait-interactive'));
             clone.querySelectorAll('.click-sym').forEach(el => {
                 const textNode = document.createTextNode(el.innerText);
                 el.parentNode.replaceChild(textNode, el);
             });
-            
+
             let saves = JSON.parse(localStorage.getItem('dnd_saves') || '{}');
             saves[name] = clone.innerHTML;
             localStorage.setItem('dnd_saves', JSON.stringify(saves));
@@ -451,6 +826,7 @@
             updateBars();
             const clone = document.getElementById('visualCanvas').cloneNode(true);
             clone.querySelectorAll('.editor-injected-ui').forEach(el => el.remove());
+            clone.querySelectorAll('.portrait-interactive').forEach(el => el.classList.remove('portrait-interactive'));
             clone.querySelectorAll('.click-sym').forEach(el => {
                 const textNode = document.createTextNode(el.innerText);
                 el.parentNode.replaceChild(textNode, el);
@@ -584,10 +960,17 @@
                 ctrlDiv.className = 'editor-injected-ui';
                 ctrlDiv.contentEditable = 'false';
                 ctrlDiv.style.cssText = 'display: flex; gap: 8px; justify-content: flex-end; align-items: center; margin-top: 10px; padding-top: 5px; border-top: 1px dashed #d4c4a8;';
+                // Check if this table is inside a spell block (grimoire)
+                const isSpellTable = table.closest('.spell-level-block') !== null;
+                const isWeaponTable = !isSpellTable && table.closest('.epic-scroll') !== null;
+                const spellBtn = isSpellTable ? `<button onclick="openSpellSearch(this)" style="cursor: pointer; background: transparent; border: 1px solid #3b82f6; color: #3b82f6; padding: 4px 10px; font-weight: bold; font-size: 0.85em;">🔍 Search Spell</button>` : '';
                 ctrlDiv.innerHTML = `
-                    <button onclick="addRowToTable(this)" style="cursor: pointer; background: transparent; border: 1px solid #10b981; color: #10b981; padding: 4px 10px; font-weight: bold; font-size: 0.85em;">➕ Add Row</button>
-                    <button onclick="removeRowFromTable(this)" style="cursor: pointer; background: transparent; border: 1px solid #ef4444; color: #ef4444; padding: 4px 10px; font-weight: bold; font-size: 0.85em;">➖ Remove Last</button>
+                    ${spellBtn}
+                    <button onclick="addRowToTable(this)" style="cursor: pointer; background: transparent; border: 1px solid #10b981; color: #10b981; padding: 4px 10px; font-weight: bold; font-size: 0.85em;">➕ Add ${isWeaponTable ? 'Weapon' : 'Row'}</button>
                 `;
+
+                // Inject per-row delete buttons
+                injectRowDeleteButtons(table);
                 
                 // For the grimoire tables, they have footers. Put the controls there.
                 let nextEl = table.nextElementSibling;
@@ -650,6 +1033,103 @@
                     }
                 });
             }
+
+            // 5. INJECT PORTRAIT DRAG & SCALE
+            const images = canvas.querySelectorAll('img');
+            images.forEach(img => {
+                img.setAttribute('draggable', 'false');
+                const container = img.parentElement;
+
+                // Parse current transform or init defaults
+                let imgScale = parseFloat(img.dataset.portraitScale) || 1;
+                let imgX = parseFloat(img.dataset.portraitX) || 0;
+                let imgY = parseFloat(img.dataset.portraitY) || 0;
+                applyPortraitTransform(img, imgX, imgY, imgScale);
+
+                if (portraitLocked) {
+                    img.classList.remove('portrait-interactive');
+                    img.onmousedown = null;
+                    img.onwheel = null;
+                    if (container) container.style.pointerEvents = 'none';
+                    return;
+                }
+
+                img.classList.add('portrait-interactive');
+                if (container) container.style.pointerEvents = 'auto';
+
+                // Add hint label
+                const existingHint = container ? container.querySelector('.portrait-hint') : null;
+                if (!existingHint && container) {
+                    const hint = document.createElement('span');
+                    hint.className = 'portrait-hint editor-injected-ui';
+                    hint.textContent = 'Drag to move \u2022 Scroll to scale';
+                    container.style.position = container.style.position || 'relative';
+                    container.appendChild(hint);
+                }
+
+                // Drag
+                img.onmousedown = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const startX = e.clientX, startY = e.clientY;
+                    const origX = parseFloat(img.dataset.portraitX) || 0;
+                    const origY = parseFloat(img.dataset.portraitY) || 0;
+
+                    function onMove(ev) {
+                        const dx = ev.clientX - startX;
+                        const dy = ev.clientY - startY;
+                        img.dataset.portraitX = origX + dx;
+                        img.dataset.portraitY = origY + dy;
+                        applyPortraitTransform(img, origX + dx, origY + dy, parseFloat(img.dataset.portraitScale) || 1);
+                    }
+                    function onUp() {
+                        document.removeEventListener('mousemove', onMove);
+                        document.removeEventListener('mouseup', onUp);
+                        pushState();
+                    }
+                    document.addEventListener('mousemove', onMove);
+                    document.addEventListener('mouseup', onUp);
+                };
+
+                // Scroll to scale
+                img.onwheel = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    let scale = parseFloat(img.dataset.portraitScale) || 1;
+                    scale += e.deltaY < 0 ? 0.05 : -0.05;
+                    scale = Math.max(0.2, Math.min(5, scale));
+                    img.dataset.portraitScale = scale;
+                    applyPortraitTransform(img, parseFloat(img.dataset.portraitX) || 0, parseFloat(img.dataset.portraitY) || 0, scale);
+                    clearTimeout(img._wheelDebounce);
+                    img._wheelDebounce = setTimeout(() => pushState(), 500);
+                };
+            });
+        }
+
+        let portraitLocked = true;
+
+        function togglePortraitLock() {
+            portraitLocked = !portraitLocked;
+            const btn = document.getElementById('portraitLockBtn');
+            if (portraitLocked) {
+                btn.innerHTML = '🔒';
+                btn.style.color = '#ef4444';
+                btn.title = 'Portrait Locked — Click to Unlock';
+            } else {
+                btn.innerHTML = '🔓';
+                btn.style.color = '#34d399';
+                btn.title = 'Portrait Unlocked — Click to Lock';
+            }
+            // Re-inject to apply/remove drag handlers
+            injectInlineControls();
+        }
+
+        function applyPortraitTransform(img, x, y, scale) {
+            img.dataset.portraitX = x;
+            img.dataset.portraitY = y;
+            img.dataset.portraitScale = scale;
+            img.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+            img.style.transformOrigin = 'center center';
         }
 
         // ==========================================
@@ -663,24 +1143,103 @@
             while(prev && prev.tagName !== 'TABLE') {
                 prev = prev.previousElementSibling;
             }
-            
+
             if (prev && prev.tagName === 'TABLE') {
                 const tbody = prev.querySelector('tbody') || prev;
-                const rows = tbody.querySelectorAll('tr');
-                
-                // For tables with <thead/>, rows[0] is data. For others, rows[0] is header.
-                const isTheadTable = prev.querySelector('thead') !== null;
-                const dataRowIndex = isTheadTable ? 0 : 1;
+                const isWeaponTable = prev.closest('.epic-scroll') !== null && !prev.closest('.spell-level-block');
 
-                if (rows.length >= (isTheadTable ? 1 : 2)) {
-                    const lastRow = rows[rows.length - 1];
-                    const newRow = lastRow.cloneNode(true);
-                    newRow.querySelectorAll('td').forEach(td => td.innerHTML = '...');
-                    tbody.appendChild(newRow);
-                    makeSymbolsClickable(); 
-                    pushState();
+                if (isWeaponTable) {
+                    // Add weapon row + info sub-row (range, ammo, notes)
+                    const weaponRow = document.createElement('tr');
+                    weaponRow.className = 'epic-row-hover';
+                    weaponRow.style.borderBottom = 'none';
+                    weaponRow.innerHTML = `
+                        <td style="padding: 6px 4px 2px; font-weight: bold;">...</td>
+                        <td style="padding: 6px 4px 2px; color: #27ae60; font-weight: bold; text-align: center;">+0</td>
+                        <td style="padding: 6px 4px 2px; color: #8b1e0b; text-align: right;">...</td>
+                    `;
+                    const ammoRow = document.createElement('tr');
+                    ammoRow.style.borderBottom = '1px dashed #d4c4a8';
+                    ammoRow.innerHTML = `
+                        <td colspan="3" style="padding: 0 4px 6px; font-size: 0.8em; color: #666; line-height: 1.6;">
+                            Range: ...<br>
+                            <span style="color: #5c2509; font-weight: bold;">Ammo:</span> ...
+                        </td>
+                    `;
+                    tbody.appendChild(weaponRow);
+                    tbody.appendChild(ammoRow);
+                } else {
+                    const rows = tbody.querySelectorAll('tr');
+                    const isTheadTable = prev.querySelector('thead') !== null;
+
+                    if (rows.length >= (isTheadTable ? 1 : 2)) {
+                        // Find last "main" row (not a sub-row with colspan)
+                        let templateRow = null;
+                        for (let i = rows.length - 1; i >= 0; i--) {
+                            const td = rows[i].querySelector('td');
+                            if (!td || td.colSpan <= 1) { templateRow = rows[i]; break; }
+                        }
+                        if (templateRow) {
+                            const newRow = templateRow.cloneNode(true);
+                            // Clear content but preserve structure
+                            newRow.querySelectorAll('td').forEach(td => {
+                                // Remove any delete buttons from clone
+                                td.querySelectorAll('.row-delete-btn').forEach(b => b.remove());
+                                td.innerHTML = '...';
+                            });
+                            tbody.appendChild(newRow);
+                        }
+                    }
                 }
+                injectRowDeleteButtons(prev);
+                makeSymbolsClickable();
+                pushState();
             }
+        }
+
+        function injectRowDeleteButtons(table) {
+            const tbody = table.querySelector('tbody') || table;
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            const isTheadTable = table.querySelector('thead') !== null;
+            const headerRowIndex = isTheadTable ? -1 : 0;
+
+            rows.forEach((row, i) => {
+                // Skip header row
+                if (i === headerRowIndex) return;
+                // Skip sub-rows (ammo/description rows with colspan) — they'll be deleted with their parent
+                const firstTd = row.querySelector('td');
+                if (firstTd && firstTd.colSpan > 1) return;
+                // Skip rows that already have a delete button
+                if (row.querySelector('.row-delete-btn')) return;
+
+                const lastCell = row.querySelector('td:last-child');
+                if (!lastCell) return;
+
+                const delBtn = document.createElement('span');
+                delBtn.className = 'row-delete-btn editor-injected-ui';
+                delBtn.contentEditable = 'false';
+                delBtn.innerHTML = '✕';
+                delBtn.title = 'Delete this row';
+                delBtn.style.cssText = 'cursor:pointer;color:#ef4444;font-weight:bold;font-size:0.75em;opacity:0;transition:opacity 0.2s;margin-left:6px;padding:2px 4px;border-radius:3px;vertical-align:middle;';
+                delBtn.onclick = async function(e) {
+                    e.stopPropagation();
+                    // Remove the row and any sub-row after it (ammo/description)
+                    const nextRow = row.nextElementSibling;
+                    if (nextRow) {
+                        const nextTd = nextRow.querySelector('td');
+                        if (nextTd && nextTd.colSpan > 1) nextRow.remove();
+                    }
+                    row.remove();
+                    pushState();
+                };
+
+                // Show on row hover
+                row.addEventListener('mouseenter', () => delBtn.style.opacity = '1');
+                row.addEventListener('mouseleave', () => delBtn.style.opacity = '0');
+
+                lastCell.style.position = 'relative';
+                lastCell.appendChild(delBtn);
+            });
         }
 
         function removeRowFromTable(btn) {
@@ -691,11 +1250,11 @@
             while(prev && prev.tagName !== 'TABLE') {
                 prev = prev.previousElementSibling;
             }
-            
+
             if (prev && prev.tagName === 'TABLE') {
                 const tbody = prev.querySelector('tbody') || prev;
                 const rows = tbody.querySelectorAll('tr');
-                
+
                 // For tables with <thead/>, index 0 is data. For others, index 0 is header. Keep at least 1 data row.
                 const isTheadTable = prev.querySelector('thead') !== null;
                 const minRows = isTheadTable ? 1 : 2;
@@ -796,34 +1355,669 @@
             }
         }
 
-        async function changePortrait() {
-            const img = document.querySelector('#visualCanvas img'); 
-            if (img) {
-                const newUrl = await showAppModal('prompt', 'Change Portrait', 'Paste direct image URL:', img.src);
-                if (newUrl) {
-                    img.src = newUrl.trim();
-                    pushState();
-                }
-            } else {
-                showAppModal('alert', 'Error', 'Could not find an image tag on this sheet!');
+        // ==========================================
+        // SPELL SEARCH (D&D 5e SRD 2014 API)
+        // ==========================================
+        let spellIndex = null;
+        let spellSearchTargetTable = null;
+
+        async function loadSpellIndex() {
+            if (spellIndex) return spellIndex;
+            try {
+                const res = await fetch('https://www.dnd5eapi.co/api/2014/spells');
+                const data = await res.json();
+                spellIndex = data.results; // [{index, name, level}, ...]
+                return spellIndex;
+            } catch (e) {
+                console.error('Failed to load spell index:', e);
+                return null;
             }
         }
 
-        const themes = ["linear-gradient(135deg, #1e3f20, #0a1c0b)", "linear-gradient(135deg, #8b0000, #3d0000)", "linear-gradient(135deg, #2c3e50, #000000)", "linear-gradient(135deg, #4b0082, #191970)", "linear-gradient(135deg, #b8860b, #556b2f)"];
-        let currentThemeIndex = 0;
-        function changeTheme() {
-            const h1 = document.querySelector('#visualCanvas h1'); 
-            if (h1) {
-                currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-                h1.parentElement.parentElement.style.background = themes[currentThemeIndex];
+        function openSpellSearch(btn) {
+            // Find the table this button belongs to
+            let el = btn.parentElement;
+            while (el && el.tagName !== 'TABLE') {
+                el = el.previousElementSibling || el.parentElement;
+                if (el && el.tagName === 'TABLE') break;
+                if (el && el.querySelector && el !== btn.parentElement) {
+                    const tbl = el.querySelector('table');
+                    if (tbl) { el = tbl; break; }
+                }
+            }
+            // More reliable: find the table via the spell-level-block
+            const block = btn.closest('.spell-level-block') || btn.closest('.spell-footer')?.closest('.spell-level-block');
+            if (block) {
+                spellSearchTargetTable = block.querySelector('table');
+            } else {
+                // Fallback: walk backwards from button
+                let prev = btn.closest('.editor-injected-ui');
+                if (prev) {
+                    let sib = prev.previousElementSibling;
+                    while (sib && sib.tagName !== 'TABLE') sib = sib.previousElementSibling;
+                    spellSearchTargetTable = sib;
+                }
+            }
+
+            const overlay = document.getElementById('spellSearchOverlay');
+            overlay.classList.add('open');
+            const input = document.getElementById('spellSearchInput');
+            input.value = '';
+            input.focus();
+            document.getElementById('spellSearchResults').innerHTML = '<div class="spell-search-item loading">Loading spell list...</div>';
+
+            loadSpellIndex().then(spells => {
+                if (!spells) {
+                    document.getElementById('spellSearchResults').innerHTML = '<div class="spell-search-item loading">Failed to load. Check internet connection.</div>';
+                    return;
+                }
+                filterSpells('');
+            });
+        }
+
+        function closeSpellSearch() {
+            document.getElementById('spellSearchOverlay').classList.remove('open');
+            spellSearchTargetTable = null;
+        }
+
+        function filterSpells(query) {
+            if (!spellIndex) return;
+            const results = document.getElementById('spellSearchResults');
+            const q = query.toLowerCase().trim();
+            const filtered = q ? spellIndex.filter(s => s.name.toLowerCase().includes(q)) : spellIndex;
+            const shown = filtered.slice(0, 50);
+
+            if (shown.length === 0) {
+                results.innerHTML = '<div class="spell-search-item loading">No spells found</div>';
+                return;
+            }
+
+            results.innerHTML = shown.map(s => {
+                const lvlText = s.level === 0 ? 'Cantrip' : 'Lvl ' + s.level;
+                return `<div class="spell-search-item" onclick="selectSpell('${s.index}')">
+                    <span>${s.name}</span>
+                    <span class="spell-lvl">${lvlText}</span>
+                </div>`;
+            }).join('');
+        }
+
+        async function selectSpell(index) {
+            const results = document.getElementById('spellSearchResults');
+            results.innerHTML = '<div class="spell-search-item loading">Fetching spell data...</div>';
+
+            try {
+                const res = await fetch('https://www.dnd5eapi.co/api/2014/spells/' + index);
+                const spell = await res.json();
+
+                insertSpellIntoTable(spell);
+                closeSpellSearch();
+            } catch (e) {
+                results.innerHTML = '<div class="spell-search-item loading">Failed to fetch spell. Try again.</div>';
+            }
+        }
+
+        function insertSpellIntoTable(spell) {
+            if (!spellSearchTargetTable) return;
+            const tbody = spellSearchTargetTable.querySelector('tbody') || spellSearchTargetTable;
+
+            // Build a condensed effect string
+            let effect = '';
+            if (spell.damage && spell.damage.damage_at_slot_level) {
+                const levels = Object.keys(spell.damage.damage_at_slot_level);
+                const baseDmg = spell.damage.damage_at_slot_level[levels[0]];
+                const dmgType = spell.damage.damage_type ? spell.damage.damage_type.name : '';
+                effect = baseDmg + ' ' + dmgType.toLowerCase();
+            } else if (spell.heal_at_slot_level) {
+                const levels = Object.keys(spell.heal_at_slot_level);
+                effect = spell.heal_at_slot_level[levels[0]] + ' healing';
+            } else if (spell.desc && spell.desc.length > 0) {
+                // Take first sentence of description
+                const firstDesc = spell.desc[0];
+                const firstSentence = firstDesc.split('.')[0];
+                effect = firstSentence.length > 80 ? firstSentence.substring(0, 77) + '...' : firstSentence;
+            }
+
+            // Add duration/concentration info
+            if (spell.concentration) {
+                effect += ' (C)';
+            }
+
+            const castTime = spell.casting_time || '1 action';
+            // Capitalize first letter
+            const castTimeClean = castTime.charAt(0).toUpperCase() + castTime.slice(1);
+
+            // Build full description
+            const fullDesc = (spell.desc || []).join('\n\n');
+            const higherLevel = (spell.higher_level || []).join('\n\n');
+            let descHtml = fullDesc.replace(/\n\n/g, '<br><br>');
+            if (higherLevel) {
+                descHtml += '<br><br><strong style="color:#5c2509;">At Higher Levels:</strong> ' + higherLevel.replace(/\n\n/g, '<br><br>');
+            }
+            // Add components & duration info
+            const components = (spell.components || []).join(', ') + (spell.material ? ' (' + spell.material + ')' : '');
+            const duration = (spell.concentration ? 'Concentration, ' : '') + (spell.duration || '');
+            descHtml = '<span style="color:#5c2509;font-weight:bold;font-size:0.85em;">Components:</span> ' + components + ' &nbsp;|&nbsp; <span style="color:#5c2509;font-weight:bold;font-size:0.85em;">Duration:</span> ' + duration + '<br><br>' + descHtml;
+
+            const descId = 'spell-desc-' + Date.now();
+
+            const newRow = document.createElement('tr');
+            newRow.className = 'epic-row-hover';
+            newRow.style.borderBottom = 'none';
+            newRow.innerHTML = `
+                <td style="padding: 6px 6px 2px; font-weight: bold; cursor: pointer; color: #2b2b2b;" onclick="const d=document.getElementById('${descId}');d.style.display=d.style.display==='none'?'table-row':'none';" title="Click to toggle description">${spell.name} <span style="font-size:0.7em;color:#94a3b8;">&#9660;</span></td>
+                <td style="padding: 6px 6px 2px;">${castTimeClean}</td>
+                <td style="padding: 6px 6px 2px;">${spell.range}</td>
+                <td style="padding: 6px 6px 2px; color: #555;">${effect}</td>
+            `;
+
+            const descRow = document.createElement('tr');
+            descRow.id = descId;
+            descRow.style.display = 'none';
+            descRow.style.borderBottom = '1px solid #f4f1ea';
+            descRow.innerHTML = `
+                <td colspan="4" style="padding: 4px 6px 8px; font-size: 0.8em; color: #444; line-height: 1.5; background: #faf8f5; border-radius: 0 0 4px 4px;">${descHtml}</td>
+            `;
+
+            tbody.appendChild(newRow);
+            tbody.appendChild(descRow);
+            pushState();
+        }
+
+        // Esc key to close spell search & shop
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                if (document.getElementById('shopOverlay').classList.contains('open')) { closeShop(); return; }
+                if (document.getElementById('spellSearchOverlay').classList.contains('open')) { closeSpellSearch(); }
+            }
+        });
+
+        // ==========================================
+        // ITEM SHOP (RETRO ZELDA STYLE)
+        // ==========================================
+        let shopEquipmentCache = null;
+        let shopCurrentCategory = 'all';
+        const shopKeeperMessages = [
+            "Welcome, adventurer! Browse my wares...",
+            "Finest goods this side of Neverwinter!",
+            "Ye won't find better prices anywhere!",
+            "Take yer time, I ain't goin' nowhere.",
+            "Need a new sword? A shield perhaps?",
+            "Every item guaranteed not-cursed!*",
+            "Buy somethin' will ya?",
+        ];
+        const shopCategoryIcons = {
+            'all': '📦', 'weapon': '⚔️', 'armor': '🛡️',
+            'adventuring-gear': '🎒', 'tools': '🔧',
+            'mounts-and-vehicles': '🐴', 'ammunition': '🏹',
+        };
+        const shopItemIcons = {
+            'Weapon': '⚔️', 'Armor': '🛡️', 'Shield': '🛡️',
+            'Adventuring Gear': '🎒', 'Tools': '🔧', 'Artisan': '🔨',
+            'Mount': '🐴', 'Vehicle': '🚢', 'Gaming': '🎲',
+            'Musical': '🎵', 'Potion': '🧪', 'Ammunition': '🏹',
+            'default': '📦'
+        };
+
+        function getItemIcon(item) {
+            const cat = item.equipment_category?.name || '';
+            const name = (item.name || '').toLowerCase();
+            if (name.includes('potion')) return '🧪';
+            if (name.includes('arrow') || name.includes('bolt') || name.includes('bullet')) return '🏹';
+            if (name.includes('horse') || name.includes('pony') || name.includes('mule') || name.includes('donkey')) return '🐴';
+            if (name.includes('ship') || name.includes('boat') || name.includes('galley')) return '🚢';
+            for (const [key, icon] of Object.entries(shopItemIcons)) {
+                if (cat.includes(key)) return icon;
+            }
+            return shopItemIcons.default;
+        }
+
+        function formatCost(item) {
+            if (!item.cost) return '- - -';
+            const price = item.cost.quantity || 0;
+            const unit = (item.cost.unit || 'gp').toUpperCase();
+            return price + ' ' + unit;
+        }
+
+        async function loadShopEquipment() {
+            if (shopEquipmentCache) return shopEquipmentCache;
+            try {
+                const resp = await fetch('https://www.dnd5eapi.co/api/equipment');
+                const data = await resp.json();
+                // Fetch all details in batches
+                const items = [];
+                const batchSize = 20;
+                for (let i = 0; i < data.results.length; i += batchSize) {
+                    const batch = data.results.slice(i, i + batchSize);
+                    const details = await Promise.all(
+                        batch.map(r => fetch('https://www.dnd5eapi.co' + r.url).then(r => r.json()).catch(() => null))
+                    );
+                    details.forEach(d => { if (d) items.push(d); });
+                    // Update progress
+                    const pct = Math.min(100, Math.round(((i + batchSize) / data.results.length) * 100));
+                    const el = document.getElementById('shopItems');
+                    if (el && el.querySelector('.shop-loading')) {
+                        el.querySelector('.shop-loading').textContent = 'LOADING WARES... ' + pct + '%';
+                    }
+                }
+                shopEquipmentCache = items;
+                return items;
+            } catch(e) {
+                console.error('Shop load failed:', e);
+                return null;
+            }
+        }
+
+        function openItemShop() {
+            const overlay = document.getElementById('shopOverlay');
+            overlay.classList.add('open');
+            const msgEl = document.getElementById('shopKeeperMsg');
+            msgEl.textContent = shopKeeperMessages[Math.floor(Math.random() * shopKeeperMessages.length)];
+            document.getElementById('shopSearchInput').value = '';
+
+            loadShopEquipment().then(items => {
+                if (!items) {
+                    document.getElementById('shopItems').innerHTML = '<div class="shop-loading">CONNECTION FAILED!<br>Check thy internet.</div>';
+                    return;
+                }
+                buildShopTabs(items);
+                renderShopItems(items);
+            });
+        }
+
+        function closeShop() {
+            document.getElementById('shopOverlay').classList.remove('open');
+        }
+
+        function buildShopTabs(items) {
+            const tabs = document.getElementById('shopTabs');
+            if (tabs.children.length > 0) return; // already built
+
+            const categories = new Map();
+            categories.set('all', items.length);
+            items.forEach(item => {
+                const cat = item.equipment_category?.name || 'Other';
+                categories.set(cat, (categories.get(cat) || 0) + 1);
+            });
+
+            categories.forEach((count, cat) => {
+                const btn = document.createElement('button');
+                btn.className = 'shop-tab' + (cat === 'all' ? ' active' : '');
+                const icon = shopCategoryIcons[cat.toLowerCase().replace(/\s+/g, '-')] || '📦';
+                btn.textContent = (cat === 'all' ? '📦 ALL' : icon + ' ' + cat.toUpperCase());
+                btn.onclick = () => {
+                    document.querySelectorAll('.shop-tab').forEach(t => t.classList.remove('active'));
+                    btn.classList.add('active');
+                    shopCurrentCategory = cat;
+                    document.getElementById('shopSearchInput').value = '';
+                    renderShopItems(shopEquipmentCache);
+                };
+                tabs.appendChild(btn);
+            });
+        }
+
+        function renderShopItems(items) {
+            const container = document.getElementById('shopItems');
+            const searchVal = (document.getElementById('shopSearchInput').value || '').toLowerCase();
+
+            let filtered = items;
+            if (shopCurrentCategory !== 'all') {
+                filtered = filtered.filter(i => (i.equipment_category?.name || '') === shopCurrentCategory);
+            }
+            if (searchVal) {
+                filtered = filtered.filter(i => i.name.toLowerCase().includes(searchVal));
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="shop-loading">NO WARES FOUND...</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+            filtered.forEach(item => {
+                const row = document.createElement('div');
+                const detailId = 'shop-detail-' + item.index;
+
+                row.className = 'shop-item';
+                row.innerHTML = `
+                    <span class="shop-item-icon">${getItemIcon(item)}</span>
+                    <span class="shop-item-name">${item.name}${item.quantity && item.quantity !== item.cost?.quantity ? ' <span style="color:#d4e857;">(x' + item.quantity + ')</span>' : ''}</span>
+                    <span class="shop-item-cost">${formatCost(item)}</span>
+                    <button class="shop-item-add" onclick="event.stopPropagation(); showItemDetail('${item.index}');" title="View full details">INFO</button>
+                    <button class="shop-item-add" onclick="event.stopPropagation(); addItemToSheet('${item.name.replace(/'/g, "\\'")}', '${formatCost(item)}', '${(item.weight || '-')}'); this.textContent='ADDED!'; this.style.borderColor='#9bbc0f'; this.style.color='#9bbc0f'; this.closest('.shop-item').classList.add('shop-added-flash');" title="Add to equipment">+ADD</button>
+                `;
+                row.onclick = () => {
+                    const existing = document.getElementById(detailId);
+                    if (existing) {
+                        existing.classList.toggle('open');
+                        row.classList.toggle('expanded');
+                        return;
+                    }
+                    // Build detail
+                    const detail = document.createElement('div');
+                    detail.id = detailId;
+                    detail.className = 'shop-item-details open';
+                    row.classList.add('expanded');
+
+                    let info = '';
+                    if (item.category_range) info += '<span>Type:</span> ' + item.category_range + '<br>';
+                    if (item.weapon_range) info += '<span>Range:</span> ' + item.weapon_range + (item.range ? ' (' + item.range.normal + (item.range.long ? '/' + item.range.long : '') + ' ft)' : '') + '<br>';
+                    if (item.damage) info += '<span>Damage:</span> ' + item.damage.damage_dice + ' ' + (item.damage.damage_type?.name || '') + '<br>';
+                    if (item.two_handed_damage) info += '<span>2-Hand:</span> ' + item.two_handed_damage.damage_dice + ' ' + (item.two_handed_damage.damage_type?.name || '') + '<br>';
+                    if (item.armor_class) info += '<span>AC:</span> ' + (item.armor_class.base || '') + (item.armor_class.dex_bonus ? ' + DEX' : '') + (item.armor_class.max_bonus ? ' (max ' + item.armor_class.max_bonus + ')' : '') + '<br>';
+                    if (item.str_minimum) info += '<span>STR req:</span> ' + item.str_minimum + '<br>';
+                    if (item.stealth_disadvantage) info += '<span>Stealth:</span> Disadvantage<br>';
+                    if (item.properties && item.properties.length > 0) info += '<span>Props:</span> ' + item.properties.map(p => p.name).join(', ') + '<br>';
+                    if (item.weight) info += '<span>Weight:</span> ' + item.weight + ' lb<br>';
+                    if (item.desc && item.desc.length > 0) info += '<br><span>Info:</span> ' + item.desc[0] + '<br>';
+                    if (!info) info = '<span>A fine item indeed!</span>';
+                    detail.innerHTML = info;
+                    row.after(detail);
+                };
+                container.appendChild(row);
+            });
+        }
+
+        function filterShopItems(val) {
+            if (shopEquipmentCache) renderShopItems(shopEquipmentCache);
+        }
+
+        function showItemDetail(index) {
+            if (!shopEquipmentCache) return;
+            const item = shopEquipmentCache.find(i => i.index === index);
+            if (!item) return;
+
+            document.getElementById('shopDetailTitle').textContent = item.name;
+            const body = document.getElementById('shopDetailBody');
+
+            let html = '<div class="detail-row"><span class="detail-label">Category:</span> ' + (item.equipment_category?.name || 'Unknown') + '</div>';
+            if (item.gear_category) html += '<div class="detail-row"><span class="detail-label">Sub-type:</span> ' + item.gear_category.name + '</div>';
+            html += '<div class="detail-row"><span class="detail-label">Cost:</span> ' + formatCost(item) + '</div>';
+            if (item.quantity && item.quantity !== item.cost?.quantity) {
+                html += '<div class="detail-row"><span class="detail-label">Quantity:</span> ' + item.quantity + ' per purchase</div>';
+            }
+            if (item.weight) html += '<div class="detail-row"><span class="detail-label">Weight:</span> ' + item.weight + ' lb</div>';
+
+            // Weapon stats
+            if (item.category_range) html += '<div class="detail-row"><span class="detail-label">Type:</span> ' + item.category_range + '</div>';
+            if (item.weapon_range) {
+                let rangeStr = item.weapon_range;
+                if (item.range) rangeStr += ' (' + item.range.normal + (item.range.long ? '/' + item.range.long : '') + ' ft)';
+                html += '<div class="detail-row"><span class="detail-label">Range:</span> ' + rangeStr + '</div>';
+            }
+            if (item.damage) html += '<div class="detail-row"><span class="detail-label">Damage:</span> ' + item.damage.damage_dice + ' ' + (item.damage.damage_type?.name || '') + '</div>';
+            if (item.two_handed_damage) html += '<div class="detail-row"><span class="detail-label">Two-Handed:</span> ' + item.two_handed_damage.damage_dice + ' ' + (item.two_handed_damage.damage_type?.name || '') + '</div>';
+
+            // Armor stats
+            if (item.armor_class) {
+                let acStr = '' + (item.armor_class.base || '');
+                if (item.armor_class.dex_bonus) acStr += ' + DEX' + (item.armor_class.max_bonus ? ' (max ' + item.armor_class.max_bonus + ')' : '');
+                html += '<div class="detail-row"><span class="detail-label">Armor Class:</span> ' + acStr + '</div>';
+            }
+            if (item.armor_category) html += '<div class="detail-row"><span class="detail-label">Armor Type:</span> ' + item.armor_category + '</div>';
+            if (item.str_minimum) html += '<div class="detail-row"><span class="detail-label">STR Required:</span> ' + item.str_minimum + '</div>';
+            if (item.stealth_disadvantage) html += '<div class="detail-row"><span class="detail-label">Stealth:</span> Disadvantage</div>';
+
+            // Properties
+            if (item.properties && item.properties.length > 0) {
+                html += '<div class="detail-row"><span class="detail-label">Properties:</span> ' + item.properties.map(p => p.name).join(', ') + '</div>';
+            }
+
+            // Special / contents
+            if (item.contents && item.contents.length > 0) {
+                html += '<div class="detail-section"><span class="detail-label">Pack Contents:</span><br>';
+                item.contents.forEach(c => {
+                    html += '&nbsp;&nbsp;• ' + (c.item?.name || 'item') + ' x' + (c.quantity || 1) + '<br>';
+                });
+                html += '</div>';
+            }
+
+            // Description
+            if (item.desc && item.desc.length > 0) {
+                html += '<div class="detail-section"><span class="detail-label">Description:</span>';
+                html += '<div class="detail-desc">' + item.desc.join('<br><br>') + '</div>';
+                html += '</div>';
+            }
+
+            // Special properties details
+            if (item.special && item.special.length > 0) {
+                html += '<div class="detail-section"><span class="detail-label">Special:</span>';
+                html += '<div class="detail-desc">' + item.special.join('<br><br>') + '</div>';
+                html += '</div>';
+            }
+
+            body.innerHTML = html;
+            document.getElementById('shopDetailPanel').classList.add('open');
+        }
+
+        function closeItemDetail() {
+            document.getElementById('shopDetailPanel').classList.remove('open');
+        }
+
+        function addItemToSheet(name, cost, weight) {
+            const canvas = document.getElementById('visualCanvas');
+            if (!canvas) return;
+            // Find the equipment/items section — look for common patterns
+            // Try to find an equipment list or create a note
+            const allText = canvas.querySelectorAll('td, div, li, span');
+            let equipmentCell = null;
+            allText.forEach(el => {
+                const t = el.textContent.trim().toLowerCase();
+                if (t === 'equipment' || t === 'equipment & gear' || t === 'other equipment' || t === 'items') {
+                    // Get the next editable container
+                    let sib = el.nextElementSibling || el.parentElement?.nextElementSibling;
+                    if (sib && sib.getAttribute('contenteditable') !== 'false') equipmentCell = sib;
+                }
+            });
+            // Fallback: Find by ID patterns
+            if (!equipmentCell) {
+                equipmentCell = canvas.querySelector('#equipment-list, #equipment, [data-field="equipment"]');
+            }
+            // Fallback: try to find an editable div that looks like an equipment area
+            if (!equipmentCell) {
+                const editables = canvas.querySelectorAll('div[contenteditable="true"], td[contenteditable="true"]');
+                // Use the largest editable area in the lower half
+                editables.forEach(el => {
+                    if (el.textContent.toLowerCase().includes('rope') || el.textContent.toLowerCase().includes('ration') || el.textContent.toLowerCase().includes('torch') || el.textContent.toLowerCase().includes('backpack')) {
+                        equipmentCell = el;
+                    }
+                });
+            }
+
+            if (equipmentCell) {
+                const line = document.createElement('div');
+                line.textContent = name + ' (' + cost + ', ' + weight + ' lb)';
+                equipmentCell.appendChild(line);
+            } else {
+                // Last resort: show as alert
+                showAppModal('alert', 'Item Added', 'Add to your equipment list:\\n\\n' + name + ' — ' + cost + ', ' + weight + ' lb');
+            }
+            pushState();
+        }
+
+        // ==========================================
+        // QUICK FILL SIDEBAR
+        // ==========================================
+        function toggleQuickFill() {
+            const sidebar = document.getElementById('qfSidebar');
+            sidebar.classList.toggle('open');
+            if (sidebar.classList.contains('open')) syncQuickFillFromSheet();
+        }
+
+        function syncQuickFillFromSheet() {
+            const canvas = document.getElementById('visualCanvas');
+            // Simple text fields
+            document.querySelectorAll('[data-qf]').forEach(input => {
+                const id = input.dataset.qf;
+                const el = canvas.querySelector('#' + id);
+                if (!el) return;
+                if (id === 'stat-speed') {
+                    // Speed has "35 \n FT" structure — extract just the number
+                    input.value = el.textContent.replace(/FT/i, '').trim();
+                } else {
+                    input.value = el.textContent.trim();
+                }
+            });
+            // Ability scores
+            document.querySelectorAll('[data-qf-stat]').forEach(input => {
+                const stat = input.dataset.qfStat;
+                const scoreEl = canvas.querySelector('#score-' + stat);
+                if (scoreEl) input.value = scoreEl.textContent.trim();
+                const modEl = canvas.querySelector('#mod-' + stat);
+                const qfMod = document.getElementById('qf-mod-' + stat);
+                if (modEl && qfMod) qfMod.textContent = modEl.textContent.trim();
+            });
+            // Portrait URL
+            const img = canvas.querySelector('#char-portrait');
+            if (img) document.getElementById('qfPortraitUrl').value = img.src;
+        }
+
+        function calcMod(score) {
+            const mod = Math.floor((score - 10) / 2);
+            return mod >= 0 ? '+' + mod : '' + mod;
+        }
+
+        // Live sync: text fields
+        document.addEventListener('input', function(e) {
+            const canvas = document.getElementById('visualCanvas');
+            if (e.target.dataset.qf) {
+                const id = e.target.dataset.qf;
+                const el = canvas.querySelector('#' + id);
+                if (!el) return;
+                if (e.target.dataset.qfSpeed) {
+                    // Speed has structure: "35 <br><span>FT</span>"
+                    // Find the first text node and update it
+                    for (let node of el.childNodes) {
+                        if (node.nodeType === 3) { node.textContent = e.target.value + ' '; break; }
+                    }
+                } else {
+                    el.textContent = e.target.value;
+                }
+                pushState();
+            }
+            if (e.target.dataset.qfStat) {
+                const stat = e.target.dataset.qfStat;
+                const score = parseInt(e.target.value) || 10;
+                const mod = calcMod(score);
+                // Update score on sheet
+                const scoreEl = canvas.querySelector('#score-' + stat);
+                if (scoreEl) scoreEl.textContent = score;
+                // Update modifier on sheet
+                const modEl = canvas.querySelector('#mod-' + stat);
+                if (modEl) modEl.textContent = mod;
+                // Update modifier display in sidebar
+                const qfMod = document.getElementById('qf-mod-' + stat);
+                if (qfMod) qfMod.textContent = mod;
+                pushState();
+            }
+        });
+
+        function applyPortraitUrl() {
+            const url = document.getElementById('qfPortraitUrl').value.trim();
+            if (!url) return;
+            const canvas = document.getElementById('visualCanvas');
+            let img = canvas.querySelector('#char-portrait');
+            if (img) {
+                img.src = url;
+                img.dataset.portraitX = 0;
+                img.dataset.portraitY = 0;
+                img.dataset.portraitScale = 1;
+                applyPortraitTransform(img, 0, 0, 1);
                 pushState();
             }
         }
+
+        async function changePortrait() {
+            let img = document.querySelector('#visualCanvas img');
+            const currentUrl = img ? img.src : '';
+            const newUrl = await showAppModal('prompt', 'Change Portrait', 'Paste direct image URL:', currentUrl);
+            if (!newUrl) return;
+
+            if (img) {
+                img.src = newUrl.trim();
+                // Reset position/scale for new image
+                img.dataset.portraitX = 0;
+                img.dataset.portraitY = 0;
+                img.dataset.portraitScale = 1;
+                applyPortraitTransform(img, 0, 0, 1);
+            } else {
+                // No image yet — create one in the canvas
+                const wrapper = document.createElement('div');
+                wrapper.style.cssText = 'position: relative; width: 100%; height: 300px; overflow: hidden; border-radius: 8px; margin: 10px 0;';
+                const newImg = document.createElement('img');
+                newImg.src = newUrl.trim();
+                newImg.style.cssText = 'width: 100%; height: 100%; object-fit: cover;';
+                wrapper.appendChild(newImg);
+                document.getElementById('visualCanvas').prepend(wrapper);
+                injectInlineControls();
+            }
+            pushState();
+        }
+
         function toggleFullscreen() {
             const el = document.getElementById('sheetContainer');
             if (!document.fullscreenElement) el.requestFullscreen ? el.requestFullscreen() : el.webkitRequestFullscreen();
             else document.exitFullscreen ? document.exitFullscreen() : document.webkitExitFullscreen();
         }
+
+        // ==========================================
+        // TEXT FORMATTING FUNCTIONS
+        // ==========================================
+        function execFmt(command) {
+            document.getElementById('visualCanvas').focus();
+            document.execCommand(command, false, null);
+            pushState();
+        }
+
+        function execFontSize(size) {
+            document.getElementById('visualCanvas').focus();
+            document.execCommand('fontSize', false, size);
+            pushState();
+        }
+
+        function execFontName(font) {
+            document.getElementById('visualCanvas').focus();
+            document.execCommand('fontName', false, font);
+            pushState();
+        }
+
+
+        let savedRange = null;
+
+        function saveSelection() {
+            const sel = window.getSelection();
+            if (sel.rangeCount > 0) {
+                savedRange = sel.getRangeAt(0).cloneRange();
+            }
+        }
+
+        (function() {
+            const picker = document.getElementById('fmtColorPicker');
+
+            picker.addEventListener('input', () => {
+                if (savedRange) {
+                    const sel = window.getSelection();
+                    sel.removeAllRanges();
+                    sel.addRange(savedRange.cloneRange());
+                }
+                document.execCommand('foreColor', false, picker.value);
+                // Re-save since DOM changed
+                const sel = window.getSelection();
+                if (sel.rangeCount > 0) {
+                    savedRange = sel.getRangeAt(0).cloneRange();
+                }
+            });
+
+            picker.addEventListener('change', () => {
+                if (savedRange) {
+                    const sel = window.getSelection();
+                    sel.removeAllRanges();
+                    sel.addRange(savedRange.cloneRange());
+                }
+                document.execCommand('foreColor', false, picker.value);
+                pushState();
+                savedRange = null;
+            });
+        })();
     </script>
 </body>
 </html>

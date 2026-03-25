@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tr '>' '>\\\\n')",
+      "Bash(curl -s \"https://www.dnd5eapi.co/api/2014/spells?limit=3\")",
+      "Bash(python -m json.tool)",
+      "Bash(curl -s https://www.dnd5eapi.co/api/2014/spells?limit=3)",
+      "Bash(curl -s \"https://www.dnd5eapi.co/api/2014/spells/fireball\")",
+      "Bash(curl -s https://www.dnd5eapi.co/api/2014/spells/fireball)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(curl -s \"https://www.dnd5eapi.co/api/equipment/arrow\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\({k:d[k] for k in [''''name'''',''''cost'''',''''quantity'''',''''weight''''] if k in d}, indent=2\\)\\)\")",
+      "Bash(curl -s https://www.dnd5eapi.co/api/equipment/arrow)",
+      "Bash(curl -sL \"https://www.dnd5eapi.co/api/equipment/arrow\")",
+      "Bash(curl -sL -o /dev/null -w \"%{http_code}\" \"https://www.dndbeyond.com/equipment/arrow\")",
+      "Bash(curl -sL -o /dev/null -w \"%{http_code} %{url_effective}\" \"https://www.dndbeyond.com/equipment/16-arrow\")",
+      "Bash(curl -sL -o /dev/null -w \"%{http_code}\" \"https://www.dndbeyond.com/equipment/longsword\")",
+      "Bash(curl -sL -o /dev/null -w \"%{http_code}\" \"https://www.dndbeyond.com/equipment/rope-hempen-50-feet\")",
+      "Bash(curl -sL -o /dev/null -w \"%{http_code}\" \"http://dnd5e.wikidot.com/weapon:longsword\")",
+      "Bash(curl -sL -o /dev/null -w \"%{http_code}\" \"http://dnd5e.wikidot.com/adventuring-gear\")",
+      "Bash(curl -sL -o /dev/null -w \"%{http_code}\" \"https://roll20.net/compendium/dnd5e/Arrow\")",
+      "Bash(curl -sL -o /dev/null -w \"%{http_code}\" \"https://roll20.net/compendium/dnd5e/Longsword\")",
+      "Bash(curl -sL \"https://www.dnd5eapi.co/api/equipment/crossbow-bolt\")"
+    ]
+  }
+}
