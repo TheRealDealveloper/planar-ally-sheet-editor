@@ -20,7 +20,9 @@
       "Bash(curl -sL -o /dev/null -w \"%{http_code}\" \"http://dnd5e.wikidot.com/adventuring-gear\")",
       "Bash(curl -sL -o /dev/null -w \"%{http_code}\" \"https://roll20.net/compendium/dnd5e/Arrow\")",
       "Bash(curl -sL -o /dev/null -w \"%{http_code}\" \"https://roll20.net/compendium/dnd5e/Longsword\")",
-      "Bash(curl -sL \"https://www.dnd5eapi.co/api/equipment/crossbow-bolt\")"
+      "Bash(curl -sL \"https://www.dnd5eapi.co/api/equipment/crossbow-bolt\")",
+      "Bash(ls \"C:\\\\Users\\\\james\\\\Documents\\\\DND\\\\.claude\\\\worktrees\\\\romantic-neumann\\\\CharacterSheet\"*)",
+      "Bash(grep -oP 'Saving Throws.{0,3000}')"
     ]
   }
 }

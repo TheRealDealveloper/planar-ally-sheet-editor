@@ -116,6 +116,15 @@
         .qf-stat-cell label { font-size: 0.7em; color: #fbbf24; font-weight: bold; min-width: unset; }
         .qf-stat-cell input { width: 100%; text-align: center; padding: 4px; font-size: 1em; font-weight: bold; }
         .qf-stat-cell .qf-mod { font-size: 0.75em; color: #34d399; margin-top: 2px; }
+        .qf-skills-grid { display: flex; flex-direction: column; gap: 3px; }
+        .qf-skill-row { display: flex; align-items: center; gap: 6px; padding: 2px 0; }
+        .qf-prof-dot { width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1em; flex-shrink: 0; user-select: none; border-radius: 50%; transition: transform 0.15s; }
+        .qf-prof-dot:hover { transform: scale(1.3); }
+        .qf-skill-row label { flex: 1; font-size: 0.8em; color: #e2e8f0; min-width: unset; }
+        .qf-skill-attr { color: #94a3b8; font-size: 0.85em; }
+        .qf-skill-val { width: 45px !important; flex: none !important; text-align: center; padding: 2px 4px !important; font-size: 0.85em; }
+        .qf-auto-calc-btn { width: 100%; margin-top: 6px; background: #1e293b; border: 1px solid #3b82f6; color: #3b82f6; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75em; font-weight: bold; transition: all 0.2s; }
+        .qf-auto-calc-btn:hover { background: #3b82f6; color: #fff; }
         .qf-portrait-row { display: flex; gap: 8px; align-items: center; }
         .qf-portrait-row input { flex: 1; }
         .qf-portrait-row button { background: #3b82f6; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8em; white-space: nowrap; }
@@ -429,6 +438,42 @@
                         </div>
                     </div>
                     <div class="qf-section">
+                        <div class="qf-section-title">Saving Throws</div>
+                        <div class="qf-skills-grid">
+                            <div class="qf-skill-row"><span class="qf-prof-dot" data-qf-prof="save-str" onclick="cycleProfDot(this)">⚪</span><label>STR</label><input type="text" data-qf="save-str" class="qf-skill-val" /></div>
+                            <div class="qf-skill-row"><span class="qf-prof-dot" data-qf-prof="save-dex" onclick="cycleProfDot(this)">⚪</span><label>DEX</label><input type="text" data-qf="save-dex" class="qf-skill-val" /></div>
+                            <div class="qf-skill-row"><span class="qf-prof-dot" data-qf-prof="save-con" onclick="cycleProfDot(this)">⚪</span><label>CON</label><input type="text" data-qf="save-con" class="qf-skill-val" /></div>
+                            <div class="qf-skill-row"><span class="qf-prof-dot" data-qf-prof="save-int" onclick="cycleProfDot(this)">⚪</span><label>INT</label><input type="text" data-qf="save-int" class="qf-skill-val" /></div>
+                            <div class="qf-skill-row"><span class="qf-prof-dot" data-qf-prof="save-wis" onclick="cycleProfDot(this)">⚪</span><label>WIS</label><input type="text" data-qf="save-wis" class="qf-skill-val" /></div>
+                            <div class="qf-skill-row"><span class="qf-prof-dot" data-qf-prof="save-cha" onclick="cycleProfDot(this)">⚪</span><label>CHA</label><input type="text" data-qf="save-cha" class="qf-skill-val" /></div>
+                        </div>
+                        <button class="qf-auto-calc-btn" onclick="autoCalcSaves()">Auto-Calculate from Scores</button>
+                    </div>
+                    <div class="qf-section">
+                        <div class="qf-section-title">Skills</div>
+                        <div class="qf-skills-grid">
+                            <div class="qf-skill-row"><span class="qf-prof-dot" data-qf-prof="skill-acrobatics" onclick="cycleProfDot(this)">⚪</span><label>Acrobatics <span class="qf-skill-attr">(DEX)</span></label><input type="text" data-qf="skill-acrobatics" class="qf-skill-val" /></div>
+                            <div class="qf-skill-row"><span class="qf-prof-dot" data-qf-prof="skill-animal-handling" onclick="cycleProfDot(this)">⚪</span><label>Animal Handling <span class="qf-skill-attr">(WIS)</span></label><input type="text" data-qf="skill-animal-handling" class="qf-skill-val" /></div>
+                            <div class="qf-skill-row"><span class="qf-prof-dot" data-qf-prof="skill-arcana" onclick="cycleProfDot(this)">⚪</span><label>Arcana <span class="qf-skill-attr">(INT)</span></label><input type="text" data-qf="skill-arcana" class="qf-skill-val" /></div>
+                            <div class="qf-skill-row"><span class="qf-prof-dot" data-qf-prof="skill-athletics" onclick="cycleProfDot(this)">⚪</span><label>Athletics <span class="qf-skill-attr">(STR)</span></label><input type="text" data-qf="skill-athletics" class="qf-skill-val" /></div>
+                            <div class="qf-skill-row"><span class="qf-prof-dot" data-qf-prof="skill-deception" onclick="cycleProfDot(this)">⚪</span><label>Deception <span class="qf-skill-attr">(CHA)</span></label><input type="text" data-qf="skill-deception" class="qf-skill-val" /></div>
+                            <div class="qf-skill-row"><span class="qf-prof-dot" data-qf-prof="skill-history" onclick="cycleProfDot(this)">⚪</span><label>History <span class="qf-skill-attr">(INT)</span></label><input type="text" data-qf="skill-history" class="qf-skill-val" /></div>
+                            <div class="qf-skill-row"><span class="qf-prof-dot" data-qf-prof="skill-insight" onclick="cycleProfDot(this)">⚪</span><label>Insight <span class="qf-skill-attr">(WIS)</span></label><input type="text" data-qf="skill-insight" class="qf-skill-val" /></div>
+                            <div class="qf-skill-row"><span class="qf-prof-dot" data-qf-prof="skill-intimidation" onclick="cycleProfDot(this)">⚪</span><label>Intimidation <span class="qf-skill-attr">(CHA)</span></label><input type="text" data-qf="skill-intimidation" class="qf-skill-val" /></div>
+                            <div class="qf-skill-row"><span class="qf-prof-dot" data-qf-prof="skill-investigation" onclick="cycleProfDot(this)">⚪</span><label>Investigation <span class="qf-skill-attr">(INT)</span></label><input type="text" data-qf="skill-investigation" class="qf-skill-val" /></div>
+                            <div class="qf-skill-row"><span class="qf-prof-dot" data-qf-prof="skill-medicine" onclick="cycleProfDot(this)">⚪</span><label>Medicine <span class="qf-skill-attr">(WIS)</span></label><input type="text" data-qf="skill-medicine" class="qf-skill-val" /></div>
+                            <div class="qf-skill-row"><span class="qf-prof-dot" data-qf-prof="skill-nature" onclick="cycleProfDot(this)">⚪</span><label>Nature <span class="qf-skill-attr">(INT)</span></label><input type="text" data-qf="skill-nature" class="qf-skill-val" /></div>
+                            <div class="qf-skill-row"><span class="qf-prof-dot" data-qf-prof="skill-perception" onclick="cycleProfDot(this)">⚪</span><label>Perception <span class="qf-skill-attr">(WIS)</span></label><input type="text" data-qf="skill-perception" class="qf-skill-val" /></div>
+                            <div class="qf-skill-row"><span class="qf-prof-dot" data-qf-prof="skill-performance" onclick="cycleProfDot(this)">⚪</span><label>Performance <span class="qf-skill-attr">(CHA)</span></label><input type="text" data-qf="skill-performance" class="qf-skill-val" /></div>
+                            <div class="qf-skill-row"><span class="qf-prof-dot" data-qf-prof="skill-persuasion" onclick="cycleProfDot(this)">⚪</span><label>Persuasion <span class="qf-skill-attr">(CHA)</span></label><input type="text" data-qf="skill-persuasion" class="qf-skill-val" /></div>
+                            <div class="qf-skill-row"><span class="qf-prof-dot" data-qf-prof="skill-religion" onclick="cycleProfDot(this)">⚪</span><label>Religion <span class="qf-skill-attr">(INT)</span></label><input type="text" data-qf="skill-religion" class="qf-skill-val" /></div>
+                            <div class="qf-skill-row"><span class="qf-prof-dot" data-qf-prof="skill-sleight-of-hand" onclick="cycleProfDot(this)">⚪</span><label>Sleight of Hand <span class="qf-skill-attr">(DEX)</span></label><input type="text" data-qf="skill-sleight-of-hand" class="qf-skill-val" /></div>
+                            <div class="qf-skill-row"><span class="qf-prof-dot" data-qf-prof="skill-stealth" onclick="cycleProfDot(this)">⚪</span><label>Stealth <span class="qf-skill-attr">(DEX)</span></label><input type="text" data-qf="skill-stealth" class="qf-skill-val" /></div>
+                            <div class="qf-skill-row"><span class="qf-prof-dot" data-qf-prof="skill-survival" onclick="cycleProfDot(this)">⚪</span><label>Survival <span class="qf-skill-attr">(WIS)</span></label><input type="text" data-qf="skill-survival" class="qf-skill-val" /></div>
+                        </div>
+                        <button class="qf-auto-calc-btn" onclick="autoCalcSkills()">Auto-Calculate from Scores</button>
+                    </div>
+                    <div class="qf-section">
                         <div class="qf-section-title">Combat</div>
                         <div class="qf-row"><label>AC</label><input type="number" data-qf="stat-ac" /></div>
                         <div class="qf-row"><label>Initiative</label><input type="text" data-qf="stat-init" /></div>
@@ -451,6 +496,14 @@
                         <div class="qf-row">
                             <label>GP</label><input type="number" data-qf="coin-gp" style="width:50px;flex:none;" />
                             <label>PP</label><input type="number" data-qf="coin-pp" style="width:50px;flex:none;" />
+                        </div>
+                    </div>
+                    <div class="qf-section">
+                        <div class="qf-section-title">Carry Weight</div>
+                        <div class="qf-row">
+                            <label>Current</label><input type="number" data-qf="weight-current" style="width:70px;flex:none;" oninput="updateWeightBar()" />
+                            <label>Max</label><input type="number" data-qf="weight-max" style="width:70px;flex:none;" oninput="updateWeightBar()" />
+                            <span style="color:#94a3b8;font-size:0.8em;">lb</span>
                         </div>
                     </div>
                 </div>
@@ -776,6 +829,9 @@
                 if (percentage < 0) percentage = 0;
                 hpBarFill.style.width = percentage + '%';
             }
+
+            // WEIGHT BAR
+            updateWeightBar();
 
             // 3. FALLBACK FOR OLD EXP FORMAT
             const spans = canvas.querySelectorAll('span');
@@ -1683,7 +1739,7 @@
                     <span class="shop-item-name">${item.name}${item.quantity && item.quantity !== item.cost?.quantity ? ' <span style="color:#d4e857;">(x' + item.quantity + ')</span>' : ''}</span>
                     <span class="shop-item-cost">${formatCost(item)}</span>
                     <button class="shop-item-add" onclick="event.stopPropagation(); showItemDetail('${item.index}');" title="View full details">INFO</button>
-                    <button class="shop-item-add" onclick="event.stopPropagation(); addItemToSheet('${item.name.replace(/'/g, "\\'")}', '${formatCost(item)}', '${(item.weight || '-')}'); this.textContent='ADDED!'; this.style.borderColor='#9bbc0f'; this.style.color='#9bbc0f'; this.closest('.shop-item').classList.add('shop-added-flash');" title="Add to equipment">+ADD</button>
+                    <button class="shop-item-add" onclick="event.stopPropagation(); addItemToSheet('${item.name.replace(/'/g, "\\'")}', ${item.cost ? item.cost.quantity : 0}, '${item.cost ? item.cost.unit : 'gp'}', '${(item.weight || '-')}', ${item.quantity || 1}); this.textContent='ADDED!'; this.style.borderColor='#9bbc0f'; this.style.color='#9bbc0f'; this.closest('.shop-item').classList.add('shop-added-flash');" title="Add to equipment">+ADD</button>
                 `;
                 row.onclick = () => {
                     const existing = document.getElementById(detailId);
@@ -1793,29 +1849,41 @@
             document.getElementById('shopDetailPanel').classList.remove('open');
         }
 
-        function addItemToSheet(name, cost, weight) {
+        function addItemToSheet(name, costQty, costUnit, weight, quantity) {
             const canvas = document.getElementById('visualCanvas');
             if (!canvas) return;
-            // Find the equipment/items section — look for common patterns
-            // Try to find an equipment list or create a note
-            const allText = canvas.querySelectorAll('td, div, li, span');
-            let equipmentCell = null;
-            allText.forEach(el => {
-                const t = el.textContent.trim().toLowerCase();
-                if (t === 'equipment' || t === 'equipment & gear' || t === 'other equipment' || t === 'items') {
-                    // Get the next editable container
-                    let sib = el.nextElementSibling || el.parentElement?.nextElementSibling;
-                    if (sib && sib.getAttribute('contenteditable') !== 'false') equipmentCell = sib;
+
+            // 1. Subtract cost from the appropriate coin on the sheet
+            const unitLower = (costUnit || 'gp').toLowerCase();
+            const coinEl = canvas.querySelector('#coin-' + unitLower);
+            if (coinEl && costQty > 0) {
+                const current = parseInt(coinEl.textContent) || 0;
+                const newVal = current - costQty;
+                if (newVal < 0) {
+                    showAppModal('alert', 'Not Enough Gold', 'You need ' + costQty + ' ' + unitLower.toUpperCase() + ' but only have ' + current + '!');
+                    return;
                 }
-            });
-            // Fallback: Find by ID patterns
-            if (!equipmentCell) {
-                equipmentCell = canvas.querySelector('#equipment-list, #equipment, [data-field="equipment"]');
+                coinEl.textContent = newVal;
             }
-            // Fallback: try to find an editable div that looks like an equipment area
+
+            // 2. Find the equipment/items section
+            let equipmentCell = null;
+            // Try by ID first
+            equipmentCell = canvas.querySelector('#equipment-list, #equipment, [data-field="equipment"]');
+            // Fallback: look for labels
+            if (!equipmentCell) {
+                const allText = canvas.querySelectorAll('td, div, li, span');
+                allText.forEach(el => {
+                    const t = el.textContent.trim().toLowerCase();
+                    if (t === 'equipment' || t === 'equipment & gear' || t === 'other equipment' || t === 'items') {
+                        let sib = el.nextElementSibling || el.parentElement?.nextElementSibling;
+                        if (sib && sib.getAttribute('contenteditable') !== 'false') equipmentCell = sib;
+                    }
+                });
+            }
+            // Fallback: find editable area with gear-like content
             if (!equipmentCell) {
                 const editables = canvas.querySelectorAll('div[contenteditable="true"], td[contenteditable="true"]');
-                // Use the largest editable area in the lower half
                 editables.forEach(el => {
                     if (el.textContent.toLowerCase().includes('rope') || el.textContent.toLowerCase().includes('ration') || el.textContent.toLowerCase().includes('torch') || el.textContent.toLowerCase().includes('backpack')) {
                         equipmentCell = el;
@@ -1823,13 +1891,18 @@
                 });
             }
 
+            // 3. Append inline (comma-separated) to match existing format
             if (equipmentCell) {
-                const line = document.createElement('div');
-                line.textContent = name + ' (' + cost + ', ' + weight + ' lb)';
-                equipmentCell.appendChild(line);
+                const qtyStr = quantity > 1 ? quantity + 'x ' : '1x ';
+                const itemText = qtyStr + name;
+                const existing = equipmentCell.textContent.trim();
+                if (existing.length > 0 && existing !== '...') {
+                    equipmentCell.textContent = existing + ', ' + itemText;
+                } else {
+                    equipmentCell.textContent = itemText;
+                }
             } else {
-                // Last resort: show as alert
-                showAppModal('alert', 'Item Added', 'Add to your equipment list:\\n\\n' + name + ' — ' + cost + ', ' + weight + ' lb');
+                showAppModal('alert', 'Item Added', 'Add to your equipment list:\n\n' + name + ' — ' + costQty + ' ' + costUnit.toUpperCase());
             }
             pushState();
         }
@@ -1865,6 +1938,17 @@
                 const modEl = canvas.querySelector('#mod-' + stat);
                 const qfMod = document.getElementById('qf-mod-' + stat);
                 if (modEl && qfMod) qfMod.textContent = modEl.textContent.trim();
+            });
+            // Proficiency dots (saves & skills) — sync from sheet
+            document.querySelectorAll('.qf-prof-dot[data-qf-prof]').forEach(dot => {
+                const key = dot.dataset.qfProf;
+                const profEl = canvas.querySelector('#prof-' + key);
+                if (profEl) {
+                    const text = profEl.textContent.trim();
+                    if (text === '🟢' || text.includes('●')) dot.textContent = '🟢';
+                    else if (text === '🔴') dot.textContent = '🔴';
+                    else dot.textContent = '⚪';
+                }
             });
             // Portrait URL
             const img = canvas.querySelector('#char-portrait');
@@ -1910,6 +1994,126 @@
                 pushState();
             }
         });
+
+        // Three-state proficiency dot: ⚪ (none) → 🟢 (proficient) → 🔴 (disadvantage) → ⚪
+        function cycleProfDot(dotEl) {
+            const current = dotEl.textContent.trim();
+            let next;
+            if (current === '⚪') next = '🟢';
+            else if (current === '🟢') next = '🔴';
+            else next = '⚪';
+            dotEl.textContent = next;
+
+            // Sync to sheet
+            const key = dotEl.dataset.qfProf;
+            const canvas = document.getElementById('visualCanvas');
+            const profEl = canvas.querySelector('#prof-' + key);
+            if (profEl) {
+                profEl.textContent = next;
+                if (next === '🟢') profEl.style.color = '#27ae60';
+                else if (next === '🔴') profEl.style.color = '#e74c3c';
+                else profEl.style.color = '#b8860b';
+            }
+            const valEl = canvas.querySelector('#' + key);
+            if (valEl) {
+                if (next === '🟢') valEl.style.color = '#8b1e0b';
+                else if (next === '🔴') valEl.style.color = '#8b1e0b';
+                else valEl.style.color = '';
+            }
+            pushState();
+        }
+
+        function getProfState(key) {
+            const dot = document.querySelector('.qf-prof-dot[data-qf-prof="' + key + '"]');
+            if (!dot) return 'none';
+            const t = dot.textContent.trim();
+            if (t === '🟢') return 'proficient';
+            if (t === '🔴') return 'disadvantage';
+            return 'none';
+        }
+
+        // Skill ability mapping
+        const skillAbilityMap = {
+            'acrobatics': 'dex', 'animal-handling': 'wis', 'arcana': 'int', 'athletics': 'str',
+            'deception': 'cha', 'history': 'int', 'insight': 'wis', 'intimidation': 'cha',
+            'investigation': 'int', 'medicine': 'wis', 'nature': 'int', 'perception': 'wis',
+            'performance': 'cha', 'persuasion': 'cha', 'religion': 'int',
+            'sleight-of-hand': 'dex', 'stealth': 'dex', 'survival': 'wis'
+        };
+
+        function autoCalcSaves() {
+            const canvas = document.getElementById('visualCanvas');
+            const profBonus = parseInt(canvas.querySelector('#prof-bonus')?.textContent.replace('+','')) || 2;
+
+            ['str','dex','con','int','wis','cha'].forEach(stat => {
+                const score = parseInt(canvas.querySelector('#score-' + stat)?.textContent) || 10;
+                const mod = Math.floor((score - 10) / 2);
+                const state = getProfState('save-' + stat);
+                const isProficient = state === 'proficient';
+                const total = mod + (isProficient ? profBonus : 0);
+                const str = (total >= 0 ? '+' : '') + total;
+
+                const input = document.querySelector('[data-qf="save-' + stat + '"]');
+                if (input) input.value = str;
+
+                const el = canvas.querySelector('#save-' + stat);
+                if (el) {
+                    el.textContent = str;
+                    el.style.color = (isProficient || state === 'disadvantage') ? '#8b1e0b' : '';
+                }
+            });
+            pushState();
+        }
+
+        function autoCalcSkills() {
+            const canvas = document.getElementById('visualCanvas');
+            const profBonus = parseInt(canvas.querySelector('#prof-bonus')?.textContent.replace('+','')) || 2;
+
+            Object.keys(skillAbilityMap).forEach(skill => {
+                const ability = skillAbilityMap[skill];
+                const score = parseInt(canvas.querySelector('#score-' + ability)?.textContent) || 10;
+                const mod = Math.floor((score - 10) / 2);
+                const state = getProfState('skill-' + skill);
+                const isProficient = state === 'proficient';
+                const total = mod + (isProficient ? profBonus : 0);
+                const str = (total >= 0 ? '+' : '') + total;
+
+                const input = document.querySelector('[data-qf="skill-' + skill + '"]');
+                if (input) input.value = str;
+
+                const el = canvas.querySelector('#skill-' + skill);
+                if (el) {
+                    el.textContent = str;
+                    el.style.color = (isProficient || state === 'disadvantage') ? '#8b1e0b' : '';
+                }
+            });
+
+            // Also update passive perception
+            const wisScore = parseInt(canvas.querySelector('#score-wis')?.textContent) || 10;
+            const wisMod = Math.floor((wisScore - 10) / 2);
+            const percState = getProfState('skill-perception');
+            const percBonus = percState === 'proficient' ? (parseInt(canvas.querySelector('#prof-bonus')?.textContent.replace('+','')) || 2) : 0;
+            const passivePerc = 10 + wisMod + percBonus;
+            const ppEl = canvas.querySelector('#passive-perception');
+            if (ppEl) ppEl.textContent = passivePerc;
+
+            pushState();
+        }
+
+        function updateWeightBar() {
+            const canvas = document.getElementById('visualCanvas');
+            const currentEl = canvas.querySelector('#weight-current');
+            const maxEl = canvas.querySelector('#weight-max');
+            const barEl = canvas.querySelector('#weight-bar-fill');
+            if (!currentEl || !maxEl || !barEl) return;
+            const current = parseInt(currentEl.textContent) || 0;
+            const max = parseInt(maxEl.textContent) || 1;
+            const pct = Math.min(100, Math.max(0, (current / max) * 100));
+            barEl.style.width = pct + '%';
+            if (pct > 90) barEl.style.background = 'linear-gradient(90deg, #e74c3c, #c0392b)';
+            else if (pct > 66) barEl.style.background = 'linear-gradient(90deg, #f39c12, #e67e22)';
+            else barEl.style.background = 'linear-gradient(90deg, #27ae60, #2ecc71)';
+        }
 
         function applyPortraitUrl() {
             const url = document.getElementById('qfPortraitUrl').value.trim();
