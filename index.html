@@ -1853,17 +1853,97 @@
             const canvas = document.getElementById('visualCanvas');
             if (!canvas) return;
 
-            // 1. Subtract cost from the appropriate coin on the sheet
-            const unitLower = (costUnit || 'gp').toLowerCase();
-            const coinEl = canvas.querySelector('#coin-' + unitLower);
-            if (coinEl && costQty > 0) {
-                const current = parseInt(coinEl.textContent) || 0;
-                const newVal = current - costQty;
-                if (newVal < 0) {
-                    showAppModal('alert', 'Not Enough Gold', 'You need ' + costQty + ' ' + unitLower.toUpperCase() + ' but only have ' + current + '!');
+            // 1. Subtract cost with currency conversion
+            // D&D currency: 1 PP = 10 GP, 1 GP = 10 SP, 1 SP = 10 CP, 1 EP = 5 SP
+            if (costQty > 0) {
+                const coinIds = ['cp', 'sp', 'ep', 'gp', 'pp'];
+                const coins = {};
+                coinIds.forEach(c => {
+                    const el = canvas.querySelector('#coin-' + c);
+                    coins[c] = el ? (parseInt(el.textContent) || 0) : 0;
+                });
+
+                // Convert everything to CP for easy math
+                function toCp(c) {
+                    return coins.cp + coins.sp * 10 + coins.ep * 50 + coins.gp * 100 + coins.pp * 1000;
+                }
+                const costInCp = {
+                    'cp': costQty,
+                    'sp': costQty * 10,
+                    'ep': costQty * 50,
+                    'gp': costQty * 100,
+                    'pp': costQty * 1000
+                };
+
+                const unitLower = (costUnit || 'gp').toLowerCase();
+                const totalCp = toCp(coins);
+                const needCp = costInCp[unitLower] || costQty * 100;
+
+                if (totalCp < needCp) {
+                    const displayCost = costQty + ' ' + costUnit.toUpperCase();
+                    showAppModal('alert', 'Not Enough Coin!', 'This costs ' + displayCost + ' but you only have ' + Math.floor(totalCp / 100) + ' GP equivalent across all coins.');
                     return;
                 }
-                coinEl.textContent = newVal;
+
+                // Subtract: try exact coin first, then convert down from higher
+                let remaining = needCp;
+
+                // First try to pay with the exact currency
+                const exactEl = canvas.querySelector('#coin-' + unitLower);
+                if (exactEl) {
+                    const exactVal = parseInt(exactEl.textContent) || 0;
+                    if (exactVal >= costQty) {
+                        // Simple case: exact coin covers it
+                        exactEl.textContent = exactVal - costQty;
+                        remaining = 0;
+                    } else {
+                        // Use what we have of this coin
+                        const cpPerUnit = { cp: 1, sp: 10, ep: 50, gp: 100, pp: 1000 };
+                        remaining -= exactVal * (cpPerUnit[unitLower] || 100);
+                        exactEl.textContent = 0;
+                    }
+                }
+
+                // If still need more, pull from highest denomination down
+                if (remaining > 0) {
+                    const denomOrder = ['pp', 'gp', 'ep', 'sp', 'cp'];
+                    const cpPer = { pp: 1000, gp: 100, ep: 50, sp: 10, cp: 1 };
+
+                    for (const denom of denomOrder) {
+                        if (remaining <= 0) break;
+                        if (denom === unitLower) continue; // already handled
+                        const el = canvas.querySelector('#coin-' + denom);
+                        if (!el) continue;
+                        const have = parseInt(el.textContent) || 0;
+                        if (have <= 0) continue;
+
+                        const denomCpVal = cpPer[denom];
+                        const coinsNeeded = Math.ceil(remaining / denomCpVal);
+                        const coinsUsed = Math.min(coinsNeeded, have);
+                        const cpUsed = coinsUsed * denomCpVal;
+
+                        el.textContent = have - coinsUsed;
+                        remaining -= cpUsed;
+                    }
+
+                    // Give change back in the largest denominations possible
+                    if (remaining < 0) {
+                        let change = Math.abs(remaining);
+                        const changeOrder = ['gp', 'sp', 'cp'];
+                        const cpPerChange = { gp: 100, sp: 10, cp: 1 };
+                        for (const denom of changeOrder) {
+                            if (change <= 0) break;
+                            const changeCoins = Math.floor(change / cpPerChange[denom]);
+                            if (changeCoins > 0) {
+                                const el = canvas.querySelector('#coin-' + denom);
+                                if (el) {
+                                    el.textContent = (parseInt(el.textContent) || 0) + changeCoins;
+                                    change -= changeCoins * cpPerChange[denom];
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             // 2. Find the equipment/items section
